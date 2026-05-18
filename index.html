@@ -257,6 +257,50 @@
     .loadBtn{ background: rgba(10,132,255,.75); color:#fff; }
     .delBtn{ background: rgba(255,69,58,.75); color:#fff; }
 
+    /* Cloud sync */
+    .cloudStatus{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(15,17,21,.32);
+      color: rgba(255,255,255,.72);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .cloudStatus span:first-child{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .cloudDot{
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      background: rgba(142,142,147,.9);
+      box-shadow: 0 0 0 3px rgba(142,142,147,.14);
+    }
+    .cloudStatus[data-state="online"] .cloudDot{ background: var(--good); box-shadow: 0 0 0 3px rgba(52,199,89,.16); }
+    .cloudStatus[data-state="syncing"] .cloudDot{ background: var(--yellow); box-shadow: 0 0 0 3px rgba(255,214,10,.16); }
+    .cloudStatus[data-state="offline"] .cloudDot{ background: var(--bad); box-shadow: 0 0 0 3px rgba(255,69,58,.16); }
+    .cloudStatus button{
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      background: rgba(10,132,255,.68);
+      color: #fff;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
     /* Primary buttons */
     .btnRow{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
     @media (max-width: 520px){ .btnRow{ grid-template-columns: 1fr; } }
@@ -348,18 +392,174 @@
     .hjCount{ margin-top: 8px; font-size: 12px; color: rgba(255,255,255,.78); font-weight: 800; }
 
     .hint{ color: rgba(255,255,255,.60); font-size: 12px; line-height: 1.35; }
+  .login-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(800px 400px at 20% 0%, rgba(10,132,255,.2), transparent 60%),
+    radial-gradient(800px 400px at 80% 20%, rgba(191,90,242,.2), transparent 60%),
+    #0b0d10;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 30px;
+  border-radius: 22px;
+
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.12);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.login-sub {
+  color: rgba(255,255,255,.6);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+
+  color: white;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-btn.primary {
+  background: #0A84FF;
+  color: white;
+}
+
+.login-btn.secondary {
+  background: rgba(255,255,255,.1);
+  color: white;
+}
+
+.login-link {
+  margin-top: 14px;
+  background: none;
+  border: none;
+  color: #0A84FF;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.error-text {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-top: 10px;
+}
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(10,132,255,.15);
+  border: 1px solid rgba(10,132,255,.35);
+  color: #0A84FF;
+  font-size: 12px;
+  font-weight: 700;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
   </style>
 </head>
 <body>
-  <div id="cronometroApp">
-   
+
+<div id="loginScreen" class="login-container">
+  <div class="login-card">
+    <h2>🔐 LeanTakt</h2>
+    <p class="login-sub">Inicia sesión para continuar</p>
+
+    <input id="email" type="email" placeholder="Correo electrónico">
+    <input id="password" type="password" placeholder="Contraseña">
+
+    <button class="login-btn primary" onclick="login()">Entrar</button>
+
+    <button class="login-btn secondary" onclick="register()">Crear cuenta</button>
+
+    <button class="login-link" onclick="resetPassword()">¿Olvidaste tu contraseña?</button>
+
+    <p id="loginError" class="error-text"></p>
+  </div>
+</div>
+
+  <div id="cronometroApp" style="display:none;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+  <div id="userEmail" class="user-badge"></div>
+  <div id="folioDisplay" style="font-size:12px;color:#FFD60A;"></div>
+  <button onclick="logout()" style="
+    background: rgba(255,69,58,.8);
+    border:none;
+    padding:8px 12px;
+    border-radius:10px;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+  ">
+    Cerrar sesión
+  </button>
+</div> 
 <h1>⏱ LeanTakt</h1>
 <div class="subtle">
   Estudio de tiempos • Takt Time • Balanceo de líneas • Heijunka & Yamazumi
 </div>
 
     <!-- Datos generales -->
+    <div class="opsCard glass mt10">
+      <div style="font-weight:800; margin-bottom:10px;">🔎 Buscar Estudio</div>
+        <div id="cloudStatus" class="cloudStatus" data-state="offline">
+        <input id="buscarFolio" placeholder="Ingresa folio (LT-...)" />
+        <button onclick="buscarPorFolioInput()" style="
+           background: rgba(163, 58, 255, 0.8);
+           border:none;
+           padding:8px 12px;
+           border-radius:10px;
+           color:white;
+           font-weight:700;
+           cursor:pointer;
+           ">
+            Buscar estudio
+          </button>
+      </div>
+    </div> 
+
     <div class="card mt14">
+      <div style="font-weight:800; margin-bottom:10px;">ℹ️ Datos Generales</div>
       <div class="grid-2">
         <input id="operacion" placeholder="Nombre de la operación" />
         <input id="cronometrista" placeholder="Cronometrista" />
@@ -515,6 +715,10 @@
     <!-- Operaciones guardadas -->
     <div class="opsCard glass mt10">
       <div style="font-weight:800; margin-bottom:10px;">📦 Operaciones guardadas</div>
+            <div id="cloudStatus" class="cloudStatus" data-state="offline">
+        <span><i class="cloudDot"></i><span id="cloudStatusText">Firebase pendiente de iniciar</span></span>
+        <button type="button" onclick="syncCloudNow(true)">Sincronizar</button>
+      </div>
       <div id="opsList" style="min-height:20px; color: rgba(255,255,255,.70);">(Aún no guardas operaciones)</div>
     </div>
 
@@ -562,7 +766,158 @@
 
   </div>
 
-<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+  
+import {
+  getAuth, 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut,
+  sendPasswordResetEmail  // ✅ AGREGA ESTO
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+  import {
+    doc,
+    enableIndexedDbPersistence,
+    getDoc,
+    getFirestore,
+    serverTimestamp,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+  import { 
+     collection,
+     query, 
+     where, 
+     getDocs 
+    } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdYGDg6O2QZyZEN6fg0gbYQ5UsaXYgk04",
+    authDomain: "leantakt-7beac.firebaseapp.com",
+    projectId: "leantakt-7beac",
+    storageBucket: "leantakt-7beac.firebasestorage.app",
+    messagingSenderId: "521243765549",
+    appId: "1:521243765549:web:68ff5d6af7d0b36ccfc1a4"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const STUDY_ID_KEY = 'leantakt_activeStudyId_v1';
+  const DEVICE_ID_KEY = 'leantakt_deviceId_v1';
+  let currentUser = null;
+  let cloudState = { state: 'syncing', text: 'Conectando con Firebase...' };
+  let readyResolve;
+  const ready = new Promise(resolve => { readyResolve = resolve; });
+  const listeners = [];
+
+  function getOrCreateLocalId(key) {
+    let value = localStorage.getItem(key);
+    if (!value) {
+      value = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      localStorage.setItem(key, value);
+    }
+    return value;
+  }
+
+  function emit(state, text) {
+    cloudState = { state, text };
+    listeners.forEach(listener => listener(cloudState));
+  }
+
+  function getStudyRef() {
+    const studyId = getOrCreateLocalId(STUDY_ID_KEY);
+    return doc(db, 'studies', studyId);
+  }
+
+  async function syncStudy(snapshot) {
+    emit('syncing', 'Sincronizando con Firebase...');
+   const user = auth.currentUser;
+   if (!user) throw new Error("Usuario no autenticado");
+    const studyRef = getStudyRef();
+    
+// ✅ AGREGA ESTA LÍNEA
+  console.log("📤 Enviando a Firebase:", snapshot);
+
+if (!window.currentFolio) {
+  window.currentFolio = generarFolio();
+}
+
+const snapshotConFolio = {
+  folio: window.currentFolio,
+  nombre: document.getElementById('operacion').value || "Sin nombre",
+  ...snapshot
+};
+document.getElementById("folioDisplay").innerText =
+  "Folio: " + window.currentFolio;
+
+// ✅ guardar en memoria (para no regenerarlo)
+window.currentFolio = snapshotConFolio.folio;
+
+console.log("📄 Folio asignado:", snapshotConFolio.folio);
+
+await setDoc(studyRef, {
+  appName: 'LeanTakt',
+  schemaVersion: 1,
+  ownerUid: user.uid,
+  deviceId: getOrCreateLocalId(DEVICE_ID_KEY),
+  studyId: studyRef.id,
+  updatedAt: serverTimestamp(),
+  updatedAtLocal: new Date().toISOString(),
+  ...snapshotConFolio
+}, { merge: true });
+    emit('online', `Guardado en Firebase Â· ${new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}`);
+  }
+
+  async function loadCurrentStudy() {
+    emit('syncing', 'Leyendo estudio desde Firebase...');
+    if (!auth.currentUser) {
+  throw new Error("Usuario no autenticado");
+}
+    const snap = await getDoc(getStudyRef());
+    if (!snap.exists()) {
+      emit('online', 'Firebase listo Â· sin estudio previo');
+      return null;
+    }
+    emit('online', 'Estudio cargado desde Firebase');
+    return snap.data();
+  }
+
+  enableIndexedDbPersistence(db).catch(error => {
+    console.warn('Persistencia offline de Firestore no disponible', error);
+  });
+
+  onAuthStateChanged(auth, user => {
+  if (user) {
+    currentUser = user;
+
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("cronometroApp").style.display = "block";
+    document.getElementById("userEmail").innerText = "👤 " +user.email;
+
+    // ✅ AGREGA ESTA LÍNEA
+    if (readyResolve) readyResolve();
+
+  } else {
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("cronometroApp").style.display = "none";
+  }
+});
+
+  window.LeanTaktCloud = {
+    ready,
+    getState: () => cloudState,
+    loadCurrentStudy,
+    syncStudy,
+    setStatusListener(listener) {
+      listeners.push(listener);
+      listener(cloudState);
+    }
+  };
+
   // ==========================
   // Helpers
   // ==========================
@@ -743,8 +1098,62 @@
   const LS_OPS_V3 = 'estudioTiempos_savedOps_v3';
   const LS_OPS_V2 = 'estudioTiempos_savedOps_v2';
   const LS_LINE = 'estudioTiempos_lineSettings_v1';
+  let cloudSyncTimer = null;
 
-  function saveOpsLS(){ localStorage.setItem(LS_OPS_V3, JSON.stringify(savedOps)); }
+  function getLineSettingsSnapshot(){
+    return {
+      jornadaMin: parseNum('jornadaMin'),
+      sueldoSemanal: parseNum('sueldoSemanal'),
+      demandaDiaria: parseNum('demandaDiaria'),
+      diasSemana: parseNum('diasSemana'),
+      heijunkaInterval: parseNum('heijunkaInterval') || Number(document.getElementById('heijunkaInterval').value)
+    };
+  }
+
+  function makeStudySnapshot(){
+    return {
+      lineSettings: getLineSettingsSnapshot(),
+      operations: savedOps.map(op => ({
+        ...op,
+        laps: Array.isArray(op.laps) ? op.laps.slice(0) : [],
+        settings: op.settings || {},
+        summary: op.summary || calcSummary(op.laps || [], op.settings || getSettingsSnapshot())
+      }))
+    };
+  }
+
+  function updateCloudStatus(state, text){
+    const box = document.getElementById('cloudStatus');
+    const label = document.getElementById('cloudStatusText');
+    if (!box || !label) return;
+    box.dataset.state = state || 'offline';
+    label.textContent = text || 'Firebase pendiente';
+  }
+
+  function queueCloudSync(){
+    clearTimeout(cloudSyncTimer);
+    cloudSyncTimer = setTimeout(() => syncCloudNow(false), 900);
+  }
+
+  async function syncCloudNow(showAlerts){
+    if (!window.LeanTaktCloud) {
+      updateCloudStatus('offline', 'Firebase no esta disponible');
+      return;
+    }
+    try {
+      await window.LeanTaktCloud.ready;
+      await window.LeanTaktCloud.syncStudy(makeStudySnapshot());
+    } catch (error) {
+      console.error('No se pudo sincronizar con Firebase', error);
+      updateCloudStatus('offline', 'Pendiente de sincronizar - guardado local');
+      if (showAlerts) alert('No se pudo sincronizar con Firebase. Tus datos siguen guardados localmente.');
+    }
+  }
+
+  function saveOpsLS(){
+    localStorage.setItem(LS_OPS_V3, JSON.stringify(savedOps));
+    queueCloudSync();
+  }
   function loadOpsLS(){
     const rawV3 = localStorage.getItem(LS_OPS_V3);
     const rawV2 = localStorage.getItem(LS_OPS_V2);
@@ -762,25 +1171,23 @@
   }
 
   function saveLineLS(){
-    const data = {
-      jornadaMin: parseNum('jornadaMin'),
-      sueldoSemanal: parseNum('sueldoSemanal'),
-      demandaDiaria: parseNum('demandaDiaria'),
-      diasSemana: parseNum('diasSemana'),
-      heijunkaInterval: parseNum('heijunkaInterval') || Number(document.getElementById('heijunkaInterval').value)
-    };
-    localStorage.setItem(LS_LINE, JSON.stringify(data));
+    localStorage.setItem(LS_LINE, JSON.stringify(getLineSettingsSnapshot()));
+    queueCloudSync();
   }
+  function applyLineSettingsSnapshot(d){
+    if (!d) return;
+    if (isFinite(d.jornadaMin)) document.getElementById('jornadaMin').value = d.jornadaMin;
+    if (isFinite(d.sueldoSemanal)) document.getElementById('sueldoSemanal').value = d.sueldoSemanal;
+    if (isFinite(d.demandaDiaria)) document.getElementById('demandaDiaria').value = d.demandaDiaria;
+    if (isFinite(d.diasSemana)) document.getElementById('diasSemana').value = d.diasSemana;
+    if (isFinite(d.heijunkaInterval)) document.getElementById('heijunkaInterval').value = String(d.heijunkaInterval);
+  }
+
   function loadLineLS(){
     const raw = localStorage.getItem(LS_LINE);
     if (!raw) return;
     try {
-      const d = JSON.parse(raw) || {};
-      if (isFinite(d.jornadaMin)) document.getElementById('jornadaMin').value = d.jornadaMin;
-      if (isFinite(d.sueldoSemanal)) document.getElementById('sueldoSemanal').value = d.sueldoSemanal;
-      if (isFinite(d.demandaDiaria)) document.getElementById('demandaDiaria').value = d.demandaDiaria;
-      if (isFinite(d.diasSemana)) document.getElementById('diasSemana').value = d.diasSemana;
-      if (isFinite(d.heijunkaInterval)) document.getElementById('heijunkaInterval').value = String(d.heijunkaInterval);
+      applyLineSettingsSnapshot(JSON.parse(raw) || {});
     } catch(e){ console.warn('No se pudo leer line settings', e); }
   }
 
@@ -788,6 +1195,10 @@
   // Guardar / Listar / Cargar / Eliminar operaciones
   // ==========================
   function saveOperation() {
+     if (!auth.currentUser) {
+     alert("Debes iniciar sesión primero");
+      return;
+    }
     if (laps.length === 0) { alert('No hay observaciones (laps) para guardar.'); return; }
     let operacion = (document.getElementById('operacion').value || '').trim();
     if (!operacion) { alert('Escribe el nombre de la operación antes de guardar.'); return; }
@@ -870,14 +1281,23 @@
   }
 
   function clearAllOperations() {
-    if (!confirm('¿Borrar todas las operaciones guardadas y reiniciar estudio?')) return;
-    savedOps = [];
-    localStorage.removeItem(LS_OPS_V3);
-    localStorage.removeItem(LS_OPS_V2);
-    renderOpsList();
-    reset();
-    updateBalanceUI();
-  }
+  if (!confirm('¿Borrar todas las operaciones guardadas y reiniciar estudio?')) return;
+
+  savedOps = [];
+
+  localStorage.removeItem(LS_OPS_V3);
+  localStorage.removeItem(LS_OPS_V2);
+
+  // ✅ IMPORTANTE
+  window.currentFolio = null;
+
+  document.getElementById("folioDisplay").innerText = "Folio: —";
+
+  queueCloudSync();
+  renderOpsList();
+  reset();
+  updateBalanceUI();
+}
 
   // ==========================
   // Cálculos de línea (Takt & costo)
@@ -1102,7 +1522,8 @@
     rows.forEach((r, i) => {
       const x = x0 + i*(barW+gap);
       const y = yScale(r.stSec);
-      const bh = (padT+chartH) - y;
+      let bh = (padT + chartH) - y;
+      if (bh < 0) bh = 0; // ✅ evita negativos
 
       // color
       const isBad = r.bottleneck;
@@ -1143,18 +1564,26 @@
   }
 
   function roundRect(ctx, x, y, w, h, r, fill, stroke){
-    if (w < 2*r) r = w/2;
-    if (h < 2*r) r = h/2;
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.arcTo(x+w, y, x+w, y+h, r);
-    ctx.arcTo(x+w, y+h, x, y+h, r);
-    ctx.arcTo(x, y+h, x, y, r);
-    ctx.arcTo(x, y, x+w, y, r);
-    ctx.closePath();
-    if (fill) ctx.fill();
-    if (stroke) ctx.stroke();
-  }
+  // ✅ evitar valores negativos
+  if (w <= 0 || h <= 0) return;
+
+  r = Math.max(0, r);
+
+  if (w < 2*r) r = w/2;
+  if (h < 2*r) r = h/2;
+
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+
+  if (fill) ctx.fill();
+  if (stroke) ctx.stroke();
+}
+
   function shorten(s, max){
     s = String(s || '');
     if (s.length <= max) return s;
@@ -1475,12 +1904,198 @@
     updateBalanceUI();
   });
 
+  async function initCloudPersistence(){
+    if (!window.LeanTaktCloud) {
+      updateCloudStatus('offline', 'Firebase no esta disponible');
+      return;
+    }
+    window.LeanTaktCloud.setStatusListener(s => updateCloudStatus(s.state, s.text));
+    try {
+      await window.LeanTaktCloud.ready;
+      if (savedOps.length > 0) {
+        await syncCloudNow(false);
+        return;
+      }
+      const cloudStudy = await window.LeanTaktCloud.loadCurrentStudy();
+      if (!cloudStudy) return;
+      if (Array.isArray(cloudStudy.operations) && cloudStudy.operations.length > 0) {
+        savedOps = cloudStudy.operations;
+        let maxId = 0;
+        savedOps.forEach(op => { if (op.id > maxId) maxId = op.id; });
+        opAutoId = maxId + 1;
+        localStorage.setItem(LS_OPS_V3, JSON.stringify(savedOps));
+      }
+      if (cloudStudy.lineSettings) {
+        applyLineSettingsSnapshot(cloudStudy.lineSettings);
+        localStorage.setItem(LS_LINE, JSON.stringify(cloudStudy.lineSettings));
+      }
+      renderOpsList();
+      updateResults();
+      updateBalanceUI();
+    } catch (error) {
+      console.error('No se pudo inicializar Firebase', error);
+      updateCloudStatus('offline', 'Modo local - Firebase pendiente');
+    }
+  }
+
   // Init
   loadOpsLS();
   loadLineLS();
   renderOpsList();
   updateResults();
   updateBalanceUI();
+  initCloudPersistence();
+
+  async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const errorEl = document.getElementById("loginError");
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    errorEl.innerText = "";
+  } catch (error) {
+    errorEl.innerText = "Correo o contraseña incorrectos";
+  }
+}
+
+async function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const errorEl = document.getElementById("loginError");
+
+  if (password.length < 6) {
+    errorEl.innerText = "La contraseña debe tener al menos 6 caracteres";
+    return;
+  }
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    errorEl.innerText = "Cuenta creada ✅";
+  } catch (error) {
+    errorEl.innerText = "Error al crear cuenta";
+  }
+}
+
+async function resetPassword() {
+  const email = document.getElementById("email").value;
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Correo enviado ✅");
+  } catch {
+    alert("Escribe un correo válido");
+  }
+}
+
+function logout() {
+  signOut(auth);
+}
+
+function generarFolio() {
+  const fecha = new Date();
+  const y = fecha.getFullYear();
+  const m = String(fecha.getMonth() + 1).padStart(2, '0');
+  const d = String(fecha.getDate()).padStart(2, '0');
+
+  const random = Math.floor(Math.random() * 9000 + 1000);
+
+  return `LT-${y}${m}${d}-${random}`;
+}
+
+async function buscarPorFolio(folio) {
+
+  console.log("🚀 Ejecutando búsqueda...");
+
+  const q = query(
+    collection(db, "studies"),
+    where("folio", "==", folio)
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  console.log("📦 Resultado Firestore:", querySnapshot);
+
+  if (querySnapshot.empty) {
+    alert("❌ No se encontró el estudio");
+    return;
+  }
+
+  const docSnap = querySnapshot.docs[0];
+  const data = docSnap.data();
+
+console.log("✅ Estudio encontrado:", data);
+
+// ✅ 1. cargar operaciones
+savedOps = data.operations || [];
+
+// ✅ 2. cargar configuraciones de línea
+if (data.lineSettings) {
+  applyLineSettingsSnapshot(data.lineSettings);
+}
+
+// ✅ 3. limpiar cronómetro actual
+reset();
+
+// ✅ 4. limpiar inputs actuales
+document.getElementById("operacion").value = "";
+document.getElementById("cronometrista").value = "";
+
+// ✅ 5. reset laps (muy importante)
+laps = [];
+lastLapTime = 0;
+elapsed = 0;
+
+// ✅ 6. renderizar TODO
+renderOpsList();
+updateResults();
+updateBalanceUI();
+
+// ✅ 7. guardar folio activo
+window.currentFolio = data.folio;
+
+// ✅ 8. mostrar folio
+document.getElementById("folioDisplay").innerText =
+  "Folio: " + data.folio;
+
+// ✅ 9. feedback
+alert(`✅ Estudio cargado: ${savedOps.length} operaciones`);
+}
+
+function buscarPorFolioInput() {
+  const folio = document.getElementById('buscarFolio').value.trim();
+
+  if (!folio) {
+    alert("Ingresa un folio");
+    return;
+  }
+
+  console.log("🔍 Buscando folio:", folio);
+
+  buscarPorFolio(folio);
+}
+
+
+
+// ✅ funciones app
+window.start = start;
+window.stop = stop;
+window.lap = lap;
+window.reset = reset;
+window.saveOperation = saveOperation;
+window.syncCloudNow = syncCloudNow;
+window.exportCSV = exportCSV;
+window.exportXLSX_ExcelJS = exportXLSX_ExcelJS;
+window.clearAllOperations = clearAllOperations;
+
+// ✅ auth
+window.login = login;
+window.register = register;
+window.logout = logout;
+
+window.buscarPorFolio = buscarPorFolio;
+window.buscarPorFolioInput = buscarPorFolioInput;
+
 </script>
 </body>
 </html>

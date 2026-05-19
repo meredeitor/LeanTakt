@@ -590,6 +590,9 @@
   </button>
 </div> 
 <h1>⏱ LeanTakt</h1>
+<div id="folioDisplay" class="chip" style="margin:10px 0;">
+  Folio: —
+</div>
 <div class="subtle">
   Estudio de tiempos • Takt Time • Balanceo de líneas • Heijunka & Yamazumi
 </div>
@@ -847,7 +850,8 @@ import {
      collection,
      query, 
      where, 
-     getDocs 
+     getDocs,
+     addDoc 
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -900,6 +904,10 @@ import {
 
 if (!window.currentFolio) {
   window.currentFolio = generarFolio();
+
+  // ✅ mostrarlo
+  document.getElementById("folioDisplay").innerText =
+    "Folio: " + window.currentFolio;
 }
 
 const snapshotConFolio = {
@@ -927,7 +935,7 @@ await setDoc(studyRef, {
   updatedAtLocal: new Date().toISOString(),
   ...snapshotConFolio
 }, { merge: true });
-    emit('online', `Guardado en Firebase Â· ${new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}`);
+    emit('online', `Guardado en Firebase · ${new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}`);
   }
 
   async function loadCurrentStudy() {
@@ -979,6 +987,13 @@ updateUserBadge(); // ✅ en lugar de innerHTML
 
       // ✅ Usuario válido
       currentUser = user;
+
+      if (!window.currentFolio) {
+      window.currentFolio = generarFolio();
+      }
+
+      document.getElementById("folioDisplay").innerText =
+      "Folio: " + window.currentFolio;
 
       // ✅ Mostrar app
       document.getElementById("loginScreen").style.display = "none";
@@ -1389,19 +1404,34 @@ updateUserBadge(); // ✅ en lugar de innerHTML
     updateBalanceUI();
   }
 
-  function clearAllOperations() {
+  function generarFolio() {
+  const fecha = new Date();
+  const y = fecha.getFullYear();
+  const m = String(fecha.getMonth() + 1).padStart(2, '0');
+  const d = String(fecha.getDate()).padStart(2, '0');
+
+  const random = Math.floor(Math.random() * 9000 + 1000);
+
+  return `LT-${y}${m}${d}-${random}`;
+}
+
+ function clearAllOperations() {
   if (!confirm('¿Borrar todas las operaciones guardadas y reiniciar estudio?')) return;
 
   savedOps = [];
 
   localStorage.removeItem(LS_OPS_V3);
   localStorage.removeItem(LS_OPS_V2);
+  localStorage.removeItem(STUDY_ID_KEY);
 
-  // ✅ IMPORTANTE
-  window.currentFolio = null;
- updateUserBadge(); // ✅
+  // 🔥 GENERAR NUEVO FOLIO AQUÍ
+  const nuevoFolio = generarFolio();
+  window.currentFolio = nuevoFolio;
 
-  document.getElementById("folioDisplay").innerText = "Folio: —";
+  document.getElementById("folioDisplay").innerText =
+    "Folio: " + nuevoFolio;
+
+  updateUserBadge();
 
   queueCloudSync();
   renderOpsList();
@@ -2133,16 +2163,6 @@ function logout() {
   signOut(auth);
 }
 
-function generarFolio() {
-  const fecha = new Date();
-  const y = fecha.getFullYear();
-  const m = String(fecha.getMonth() + 1).padStart(2, '0');
-  const d = String(fecha.getDate()).padStart(2, '0');
-
-  const random = Math.floor(Math.random() * 9000 + 1000);
-
-  return `LT-${y}${m}${d}-${random}`;
-}
 
 async function buscarPorFolio(folio) {
 
@@ -2281,7 +2301,7 @@ function updateUserBadge() {
   const folio = window.currentFolio || "-";
 
   document.getElementById("userEmail").innerHTML =
-    `👤 ${nombre} | 🛡 ${rol} | 📄 ${folio}`;
+    `👤 ${nombre} | 🛡 ${rol}`;
 }
 
 // ✅ funciones app

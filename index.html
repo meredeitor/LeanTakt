@@ -490,16 +490,70 @@
   color: #0A84FF;
   font-size: 12px;
   font-weight: 700;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+  /* ✅ QUITAR LIMITES */
+  white-space: normal;
+  overflow: visible;
+  max-width: 100%;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
 
+.modal-content {
+  width: 90%;
+  max-width: 420px;
+  border-radius: 22px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.modal-header button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.modal-body {
+  max-height: 300px;
+  overflow-y: auto;
+}
   </style>
 </head>
 <body>
+<div id="adminModal" class="modal">
+  <div class="modal-content">
 
+    <div class="modal-header">
+      <h3>👑 Panel Admin</h3>
+      <button onclick="closeAdminModal()">✖</button>
+    </div>
+
+    <div id="adminList" class="modal-body">
+      Cargando usuarios...
+    </div>
+
+  </div>
+</div>
 <div id="loginScreen" class="login-container">
   <div class="login-card">
     <h2>🔐 LeanTakt</h2>
@@ -520,8 +574,9 @@
 
   <div id="cronometroApp" style="display:none;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+  
   <div id="userEmail" class="user-badge"></div>
-  <div id="folioDisplay" style="font-size:12px;color:#FFD60A;"></div>
+  
   <button onclick="logout()" style="
     background: rgba(255,69,58,.8);
     border:none;
@@ -538,11 +593,11 @@
 <div class="subtle">
   Estudio de tiempos • Takt Time • Balanceo de líneas • Heijunka & Yamazumi
 </div>
-
+<button class="btn" onclick="openAdminModal()">Admin</button>
     <!-- Datos generales -->
     <div class="opsCard glass mt10">
       <div style="font-weight:800; margin-bottom:10px;">🔎 Buscar Estudio</div>
-        <div id="cloudStatus" class="cloudStatus" data-state="offline">
+       <div id="cloudSearchStatus" class="cloudStatus" data-state="offline">
         <input id="buscarFolio" placeholder="Ingresa folio (LT-...)" />
         <button onclick="buscarPorFolioInput()" style="
            background: rgba(163, 58, 255, 0.8);
@@ -780,6 +835,7 @@ import {
 
   import {
     doc,
+    updateDoc,
     enableIndexedDbPersistence,
     getDoc,
     getFirestore,
@@ -851,11 +907,13 @@ const snapshotConFolio = {
   nombre: document.getElementById('operacion').value || "Sin nombre",
   ...snapshot
 };
+
 document.getElementById("folioDisplay").innerText =
   "Folio: " + window.currentFolio;
 
 // ✅ guardar en memoria (para no regenerarlo)
 window.currentFolio = snapshotConFolio.folio;
+updateUserBadge(); // ✅ ESTA ES LA CLAVE
 
 console.log("📄 Folio asignado:", snapshotConFolio.folio);
 
@@ -890,20 +948,71 @@ await setDoc(studyRef, {
     console.warn('Persistencia offline de Firestore no disponible', error);
   });
 
-  onAuthStateChanged(auth, user => {
+ onAuthStateChanged(auth, async (user) => {
+
   if (user) {
-    currentUser = user;
+    try {
+      // 🔍 Obtener datos del usuario desde Firestore
+      const userRef = doc(db, "usuarios", user.uid);
+      const userSnap = await getDoc(userRef);
 
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("cronometroApp").style.display = "block";
-    document.getElementById("userEmail").innerText = "👤 " +user.email;
+      if (!userSnap.exists()) {
+        alert("⛔ Usuario no registrado correctamente");
+        await signOut(auth);
+        return;
+      }
 
-    // ✅ AGREGA ESTA LÍNEA
-    if (readyResolve) readyResolve();
+     
+const data = userSnap.data();
+
+window.userData = data; // ✅ AGREGA ESTO
+
+updateUserBadge(); // ✅ en lugar de innerHTML
+
+
+      // 🚫 VALIDAR ESTATUS
+      if (data.estatus !== "activo") {
+        alert("⛔ Tu cuenta está pendiente de autorización");
+        await signOut(auth);
+        return;
+      }
+
+      // ✅ Usuario válido
+      currentUser = user;
+
+      // ✅ Mostrar app
+      document.getElementById("loginScreen").style.display = "none";
+      document.getElementById("cronometroApp").style.display = "block";
+
+      // ✅ Valores seguros (por si falta algo)
+      const nombre = data.nombre || user.email;
+      const rol = data.rol || "sin rol";
+
+
+      // ✅ Mostrar panel admin solo si es admin
+      const adminPanel = document.getElementById("adminPanel");
+      if (rol === "admin") {
+      document.querySelector('button[onclick="openAdminModal()"]').style.display = "block";
+       } else {
+       document.querySelector('button[onclick="openAdminModal()"]').style.display = "none";
+    }
+
+      // ✅ Liberar bloqueo de Firebase (IMPORTANTE)
+      if (readyResolve) readyResolve();
+
+    } catch (error) {
+      console.error("❌ Error cargando usuario:", error);
+      alert("Error al validar usuario");
+      await signOut(auth);
+    }
 
   } else {
+    // 🔒 Sin sesión → mostrar login
     document.getElementById("loginScreen").style.display = "flex";
     document.getElementById("cronometroApp").style.display = "none";
+
+    // limpiar datos visibles
+    document.getElementById("userEmail").innerHTML = "";
   }
 });
 
@@ -1290,6 +1399,7 @@ await setDoc(studyRef, {
 
   // ✅ IMPORTANTE
   window.currentFolio = null;
+ updateUserBadge(); // ✅
 
   document.getElementById("folioDisplay").innerText = "Folio: —";
 
@@ -1970,8 +2080,18 @@ async function register() {
   }
 
   try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    errorEl.innerText = "Cuenta creada ✅";
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+    // ✅ Crear registro en Firestore
+    await setDoc(doc(db, "usuarios", cred.user.uid), {
+      email: email,
+      rol: "cronometrista",
+      estatus: "pendiente",
+      createdAt: serverTimestamp()
+    });
+
+    errorEl.innerText = "Cuenta creada ✅ (pendiente de aprobación)";
+    
   } catch (error) {
     errorEl.innerText = "Error al crear cuenta";
   }
@@ -1986,6 +2106,27 @@ async function resetPassword() {
   } catch {
     alert("Escribe un correo válido");
   }
+}
+
+async function verPendientes() {
+  const querySnapshot = await getDocs(collection(db, "usuarios"));
+
+  let html = "";
+
+  querySnapshot.forEach((docSnap) => {
+    const u = docSnap.data();
+
+    if (u.estatus === "pendiente") {
+      html += `
+        <div>
+          ${u.email}
+          <button onclick="aprobarUsuario('${docSnap.id}')">✅ Aprobar</button>
+        </div>
+      `;
+    }
+  });
+
+  document.getElementById("adminPanel").innerHTML = html;
 }
 
 function logout() {
@@ -2053,6 +2194,7 @@ updateBalanceUI();
 
 // ✅ 7. guardar folio activo
 window.currentFolio = data.folio;
+updateUserBadge(); // ✅
 
 // ✅ 8. mostrar folio
 document.getElementById("folioDisplay").innerText =
@@ -2075,7 +2217,72 @@ function buscarPorFolioInput() {
   buscarPorFolio(folio);
 }
 
+function openAdminModal() {
+  document.getElementById("adminModal").style.display = "flex";
+  cargarUsuariosPendientes();
+}
 
+function closeAdminModal() {
+  document.getElementById("adminModal").style.display = "none";
+}
+
+async function cargarUsuariosPendientes() {
+  const container = document.getElementById("adminList");
+
+  container.innerHTML = "Cargando...";
+
+  const snapshot = await getDocs(collection(db, "usuarios"));
+
+  let html = "";
+
+  snapshot.forEach(docSnap => {
+    const u = docSnap.data();
+
+    if (u.estatus === "pendiente") {
+      html += `
+        <div class="opRow">
+          <div>
+            <div class="opName">${u.nombre || u.email}</div>
+            <div class="opMeta">${u.email}</div>
+          </div>
+
+          <div class="miniBtns">
+            <button class="miniBtn loadBtn" onclick="aprobarUsuario('${docSnap.id}')">
+              ✅
+            </button>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  if (!html) {
+    html = "<div style='text-align:center;'>✅ No hay pendientes</div>";
+  }
+
+  container.innerHTML = html;
+}
+
+async function aprobarUsuario(uid) {
+  await updateDoc(doc(db, "usuarios", uid), {
+    estatus: "activo"
+  });
+
+  alert("✅ Usuario aprobado");
+  cargarUsuariosPendientes();
+}
+
+
+function updateUserBadge() {
+  if (!window.userData) return;
+
+  const nombre = window.userData.nombre || "Usuario";
+  const rol = window.userData.rol || "usuario";
+  const folio = window.currentFolio || "-";
+
+  document.getElementById("userEmail").innerHTML =
+    `👤 ${nombre} | 🛡 ${rol} | 📄 ${folio}`;
+}
 
 // ✅ funciones app
 window.start = start;
@@ -2095,6 +2302,12 @@ window.logout = logout;
 
 window.buscarPorFolio = buscarPorFolio;
 window.buscarPorFolioInput = buscarPorFolioInput;
+window.verPendientes = verPendientes;
+window.aprobarUsuario = aprobarUsuario;
+window.cargarUsuariosPendientes = cargarUsuariosPendientes;
+window.openAdminModal = openAdminModal;
+window.closeAdminModal = closeAdminModal;
+window.aprobarUsuario = aprobarUsuario;
 
 </script>
 </body>

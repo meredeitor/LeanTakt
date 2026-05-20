@@ -302,7 +302,7 @@
       white-space: nowrap;
     }
     /* Primary buttons */
-    .btnRow{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .btnRow{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px; }
     @media (max-width: 520px){ .btnRow{ grid-template-columns: 1fr; } }
     .btn{ width:100%; padding: 14px 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); color: rgba(255,255,255,.92); font-weight: 800; cursor:pointer; transition: transform .12s ease, opacity .12s ease; box-shadow: 0 14px 26px rgba(0,0,0,.35); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
     .btn:active{ transform: scale(.98); opacity: .9; }
@@ -496,25 +496,35 @@
   overflow: visible;
   max-width: 100%;
 }
+
+.table tr:hover {
+  background: rgba(10,132,255,.15);
+  transition: 0.2s;
+}
+
 .modal {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.6);
   display: none;
-  align-items: center;
   justify-content: center;
-  z-index: 999;
+  align-items: center;
+  z-index: 9999; /* 🔥 muy importante */
 }
+
 
 .modal-content {
   width: 90%;
   max-width: 420px;
-  border-radius: 22px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(20px);
+  border-radius: 20px;
   padding: 20px;
-  color: white;
+
+  background: rgba(20,20,25,.9);
+  border: 1px solid rgba(255,255,255,.12);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
   box-shadow: 0 20px 60px rgba(0,0,0,.6);
 }
 
@@ -522,7 +532,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .modal-header button {
@@ -537,9 +547,45 @@
   max-height: 300px;
   overflow-y: auto;
 }
+.close-btn {
+  border: none;
+  background: rgba(255,69,58,.9);
+  color: white;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ciclo-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: 14px;
+  color: rgba(255,255,255,.85);
+}
+
+.ciclo-row:first-child {
+  border-top: none;
+}
+.opRow {
+  cursor: pointer;
+  transition: background .15s ease, transform .1s ease;
+}
+
+.opRow:hover {
+  background: rgba(255,255,255,.05);
+}
+
+.opRow:active {
+  transform: scale(0.98);
+}
   </style>
 </head>
 <body>
+ <!-- Modal Admin -->
 <div id="adminModal" class="modal">
   <div class="modal-content">
 
@@ -554,6 +600,8 @@
 
   </div>
 </div>
+
+ <!-- Modal Login -->
 <div id="loginScreen" class="login-container">
   <div class="login-card">
     <h2>🔐 LeanTakt</h2>
@@ -590,32 +638,14 @@
   </button>
 </div> 
 <h1>⏱ LeanTakt</h1>
-<div id="folioDisplay" class="chip" style="margin:10px 0;">
-  Folio: —
-</div>
 <div class="subtle">
   Estudio de tiempos • Takt Time • Balanceo de líneas • Heijunka & Yamazumi
 </div>
-<button class="btn" onclick="openAdminModal()">Admin</button>
+<div id="folioDisplay" class="chip" style="margin:10px 0;">
+  Folio: —
+</div>
+<input id="nombreEstudio" placeholder="Nombre del estudio" />
     <!-- Datos generales -->
-    <div class="opsCard glass mt10">
-      <div style="font-weight:800; margin-bottom:10px;">🔎 Buscar Estudio</div>
-       <div id="cloudSearchStatus" class="cloudStatus" data-state="offline">
-        <input id="buscarFolio" placeholder="Ingresa folio (LT-...)" />
-        <button onclick="buscarPorFolioInput()" style="
-           background: rgba(163, 58, 255, 0.8);
-           border:none;
-           padding:8px 12px;
-           border-radius:10px;
-           color:white;
-           font-weight:700;
-           cursor:pointer;
-           ">
-            Buscar estudio
-          </button>
-      </div>
-    </div> 
-
     <div class="card mt14">
       <div style="font-weight:800; margin-bottom:10px;">ℹ️ Datos Generales</div>
       <div class="grid-2">
@@ -764,11 +794,32 @@
     <div class="btnRow">
       <button class="btn save" onclick="saveOperation()">Guardar Operación</button>
       <button class="btn export" onclick="exportCSV()">Exportar CSV</button>
+       <button class="btn export2" onclick="exportXLSX_ExcelJS()">Exportar XLSX (pro)</button>
     </div>
     <div class="btnRow">
-      <button class="btn export2" onclick="exportXLSX_ExcelJS()">Exportar XLSX (pro)</button>
+      
       <button class="btn" onclick="clearAllOperations()">Nuevo Estudio</button>
+      <button class="btn" onclick="abrirModalEstudios()">📂 Estudios</button>
+      <button class="btn" onclick="openAdminModal()">Admin</button>
     </div>
+    
+  <div class="opsCard glass mt10">
+      <div style="font-weight:800; margin-bottom:10px;">🔎 Buscar Estudio</div>
+       <div id="cloudSearchStatus" class="cloudStatus" data-state="offline">
+        <input id="buscarFolio" placeholder="Ingresa folio (LT-...)" />
+        <button onclick="buscarPorFolioInput()" style="
+           background: rgba(163, 58, 255, 0.8);
+           border:none;
+           padding:8px 12px;
+           border-radius:10px;
+           color:white;
+           font-weight:700;
+           cursor:pointer;
+           ">
+            Buscar estudio
+          </button>
+      </div>
+    </div> 
 
     <!-- Operaciones guardadas -->
     <div class="opsCard glass mt10">
@@ -871,6 +922,11 @@ import {
   let currentUser = null;
   let cloudState = { state: 'syncing', text: 'Conectando con Firebase...' };
   let readyResolve;
+  
+  let viewMode = "ops"; // ops | detail | ciclos
+  let selectedStudy = null;
+  let selectedOp = null;
+
   const ready = new Promise(resolve => { readyResolve = resolve; });
   const listeners = [];
 
@@ -912,7 +968,7 @@ if (!window.currentFolio) {
 
 const snapshotConFolio = {
   folio: window.currentFolio,
-  nombre: document.getElementById('operacion').value || "Sin nombre",
+  nombre: document.getElementById('nombreEstudio').value || "Sin nombre",
   ...snapshot
 };
 
@@ -1349,28 +1405,104 @@ updateUserBadge(); // ✅ en lugar de innerHTML
     document.getElementById('operacion').value = '';
   }
 
-  function renderOpsList() {
-    let el = document.getElementById('opsList');
+function renderOpsList() {
+  let el = document.getElementById('opsList');
+
+  // 🟢 MODO 1: LISTA DE OPERACIONES
+  if (viewMode === "ops") {
+
     if (!savedOps.length) {
       el.innerHTML = '(Aún no guardas operaciones)';
       return;
     }
+
     let html = '';
+
     savedOps.forEach(op => {
       html += `
-        <div class="opRow">
+        <div class="opRow" onclick="openDetail(${op.id})">
           <div>
             <div class="opName">${escapeHtml(op.operacion)}</div>
-            <div class="opMeta">${op.laps.length} ciclos · Prom ${format(op.summary.prom)} · Est ${format(op.summary.estandar)}</div>
+            <div class="opMeta">
+              ${op.laps.length} ciclos · Prom ${format(op.summary.prom)} · Est ${format(op.summary.estandar)}
+            </div>
           </div>
-          <div class="miniBtns">
-            <button class="miniBtn loadBtn" onclick="loadOp(${op.id})">Cargar</button>
-            <button class="miniBtn delBtn" onclick="deleteOp(${op.id})">X</button>
-          </div>
-        </div>`;
+        </div>
+      `;
     });
+
     el.innerHTML = html;
   }
+
+  // 🔵 MODO 2: DETALLE DE LA OPERACIÓN (CICLOS)
+  else if (viewMode === "detail" && selectedStudy) {
+
+    let html = `
+      <div class="miniBtn" onclick="goBack()">⬅ Volver</div>
+      <div class="opName" style="margin-top:10px;">
+        ${escapeHtml(selectedStudy.operacion)}
+      </div>
+    `;
+
+    if (!selectedStudy.laps.length) {
+      html += `<div class="hint mt10">Sin ciclos</div>`;
+    } else {
+      selectedStudy.laps.forEach((t, i) => {
+        html += `
+          <div class="opRow" onclick="openCiclos(${i})">
+            <span>Ciclo ${i + 1}</span>
+            <span>${format(t)}</span>
+          </div>
+        `;
+      });
+    }
+
+    el.innerHTML = html;
+  }
+
+  // 🟣 MODO 3: DETALLE DE UN CICLO
+  else if (viewMode === "ciclos" && selectedOp != null && selectedStudy) {
+
+    let val = selectedStudy.laps[selectedOp];
+
+    el.innerHTML = `
+      <div class="miniBtn" onclick="goBackDetail()">⬅ Volver</div>
+
+      <div class="opName" style="margin-top:10px;">
+        ${escapeHtml(selectedStudy.operacion)}
+      </div>
+
+      <div class="opRow">
+        <span><b>Ciclo ${selectedOp + 1}</b></span>
+        <span>${format(val)}</span>
+      </div>
+    `;
+  }
+}
+
+function openDetail(id) {
+  selectedStudy = savedOps.find(op => op.id === id);
+  viewMode = "detail";
+  renderOpsList();
+}
+
+function openCiclos(idx) {
+  selectedOp = idx;
+  viewMode = "ciclos";
+  renderOpsList();
+}
+
+function goBack() {
+  viewMode = "ops";
+  selectedStudy = null;
+  renderOpsList();
+}
+
+function goBackDetail() {
+  viewMode = "detail";
+  selectedOp = null;
+  renderOpsList();
+}
 
   function loadOp(id) {
     let idx = savedOps.findIndex(x => x.id === id);
@@ -2296,13 +2428,186 @@ async function aprobarUsuario(uid) {
 function updateUserBadge() {
   if (!window.userData) return;
 
-  const nombre = window.userData.nombre || "Usuario";
+  const nombre = window.userData.nombre || window.userData.email || "Usuario";
   const rol = window.userData.rol || "usuario";
-  const folio = window.currentFolio || "-";
 
   document.getElementById("userEmail").innerHTML =
     `👤 ${nombre} | 🛡 ${rol}`;
 }
+
+function abrirModalEstudios() {
+  document.getElementById("modalEstudios").style.display = "flex";
+  cargarTablaEstudios();
+}
+
+async function cargarTablaEstudios() {
+  const tbody = document.getElementById("tablaEstudios");
+
+  if (!tbody) {
+    console.error("❌ No existe tablaEstudios");
+    return;
+  }
+
+  tbody.innerHTML = "<tr><td colspan='4'>Cargando...</td></tr>";
+
+  try {
+    const snapshot = await getDocs(collection(db, "studies"));
+
+    let html = "";
+
+    snapshot.forEach(docSnap => {
+      const d = docSnap.data();
+
+      html += `
+        <tr onclick="verDetalleEstudio('${d.folio || ''}')" style="cursor:pointer">
+          <td><b>${d.folio || '-'}</b></td>
+          <td>${d.nombre || 'Sin nombre'}</td>
+          <td>${d.ownerUid || '-'}</td>
+          <td>${d.updatedAtLocal || '-'}</td>
+        </tr>
+      `;
+    });
+
+    if (!html) {
+      html = `<tr><td colspan="4" style="text-align:center;">⚠️ No hay estudios</td></tr>`;
+    }
+
+    tbody.innerHTML = html;
+
+  } catch (error) {
+    console.error("❌ Error cargando estudios:", error);
+    tbody.innerHTML = "<tr><td colspan='4'>Error al cargar</td></tr>";
+  }
+}
+
+function cerrarModalEstudios() {
+  document.getElementById("modalEstudios").style.display = "none";
+}
+
+async function seleccionarEstudio(folio) {
+  console.log("📂 Abrir:", folio);
+
+  await buscarPorFolio(folio); // ✅ reutilizas tu función
+
+  cerrarModalEstudios(); // ✅ cierra modal automáticamente
+}
+
+
+function abrirModalDetalle() {
+  document.getElementById("modalDetalle").style.display = "flex";
+}
+
+function cerrarModalDetalle() {
+  document.getElementById("modalDetalle").style.display = "none";
+}
+
+async function verDetalleEstudio(folio) {
+  console.log("👁 Ver estudio (solo lectura):", folio);
+
+  const q = query(
+    collection(db, "studies"),
+    where("folio", "==", folio)
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    alert("No se encontró el estudio");
+    return;
+  }
+
+  const data = snapshot.docs[0].data();
+
+  renderDetalleModal(data); // ✅ SOLO VISUALIZA
+  abrirModalDetalle();      // ✅ abre segundo modal
+}
+
+function renderDetalleModal(data) {
+  const cont = document.getElementById("detalleContenido");
+
+  let html = `
+    <div style="margin-bottom:10px;">
+      <b>Folio:</b> ${data.folio || '-'}<br>
+      <b>Nombre:</b> ${data.nombre || '-'}
+    </div>
+  `;
+
+  html += `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Operación</th>
+          <th>Promedio</th>
+          <th>Std</th>
+          <th>Ciclos</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  if (data.operations && data.operations.length > 0) {
+    data.operations.forEach(op => {
+      html += `
+        <tr style="cursor:pointer;" onclick='abrirModalCiclos(${JSON.stringify(op.laps)})'>
+          <td>${op.operacion || '-'}</td>
+          <td>${format(op.summary?.prom || 0)}</td>
+          <td>${format(op.summary?.estandar || 0)}</td>
+          <td>${op.laps?.length || 0}</td>
+        </tr>
+      `;
+    });
+  } else {
+    html += `<tr><td colspan="4">Sin operaciones</td></tr>`;
+  }
+
+  html += "</tbody></table>";
+
+  cont.innerHTML = html;
+}
+
+function abrirModalCiclos(lapsData) {
+  const modal = document.getElementById("modalCiclos");
+  const container = document.getElementById("ciclosContainer");
+
+  container.innerHTML = "";
+
+  if (!lapsData || lapsData.length === 0) {
+    container.innerHTML = "<p>No hay ciclos registrados</p>";
+  } else {
+    lapsData.forEach((t, i) => {
+      const div = document.createElement("div");
+      div.className = "ciclo-row";
+      div.innerHTML = `
+        <span>Obs ${i + 1}</span>
+        <span>${format(t)}</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  modal.style.display = "flex";
+}
+
+function cerrarModalCiclos() {
+  document.getElementById("modalCiclos").style.display = "none";
+}
+
+
+// 👇 necesario por uso de onclick
+window.abrirModalCiclos = abrirModalCiclos;
+window.cerrarModalCiclos = cerrarModalCiclos;
+
+window.verDetalleEstudio = verDetalleEstudio;
+
+window.abrirModalDetalle = abrirModalDetalle;
+window.cerrarModalDetalle = cerrarModalDetalle;
+
+
+window.cargarTablaEstudios = cargarTablaEstudios;
+window.seleccionarEstudio = seleccionarEstudio;
+
+window.abrirModalEstudios = abrirModalEstudios;
+window.cerrarModalEstudios = cerrarModalEstudios;
 
 // ✅ funciones app
 window.start = start;
@@ -2329,6 +2634,67 @@ window.openAdminModal = openAdminModal;
 window.closeAdminModal = closeAdminModal;
 window.aprobarUsuario = aprobarUsuario;
 
+window.openDetail = openDetail;
+window.openCiclos = openCiclos;
+window.goBack = goBack;
+window.goBackDetail = goBackDetail;
+
 </script>
+<!-- Modal Estudios -->
+<div id="modalEstudios" class="modal">
+  <div class="modal-content" style="max-width:700px;">
+
+    <div class="modal-header">
+      <h3>📂 Estudios</h3>
+      <button onclick="cerrarModalEstudios()">✖</button>
+    </div>
+
+    <div style="overflow:auto;">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Folio</th>
+            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="tablaEstudios"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Tiempo Estandar -->
+<div id="modalDetalle" class="modal">
+  <div class="modal-content" style="max-width:800px;">
+
+    <div class="modal-header">
+      <h3>📊 Detalle del estudio</h3>
+      <button onclick="cerrarModalDetalle()">✖</button>
+    </div>
+
+    <div id="detalleContenido">
+      Cargando...
+    </div>
+
+  </div>
+</div>
+
+ <!-- Modal Ciclos -->
+<div id="modalCiclos" class="modal">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3>📊 Detalle de ciclos</h3>
+      <button class="close-btn" onclick="cerrarModalCiclos()">✕</button>
+    </div>
+
+    <div id="ciclosContainer"></div>
+
+  </div>
+</div>
+
 </body>
 </html>

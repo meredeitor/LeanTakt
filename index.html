@@ -2,11 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Estudio de Tiempos y Balanceo de Líneas</title>
 
   <!-- PWA -->
   <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0b0d10" media="(prefers-color-scheme: dark)">
 
@@ -53,7 +55,7 @@
 
     /* App container */
     #cronometroApp{
-      max-width: 980px;
+      max-width: 1440px;
       margin: 0 auto;
       border-radius: 26px;
       padding: 18px;
@@ -64,6 +66,125 @@
       -webkit-backdrop-filter: blur(14px);
       padding-left: calc(18px + env(safe-area-inset-left));
       padding-right: calc(18px + env(safe-area-inset-right));
+    }
+
+    /* Application shell */
+    .app-shell{ display:grid; grid-template-columns:250px minmax(0,1fr); gap:18px; align-items:start; }
+    .app-sidebar{ position:sticky; top:18px; min-height:calc(100vh - 72px); padding:18px 14px; border:1px solid var(--stroke); border-radius:22px; background:linear-gradient(180deg,rgba(17,27,42,.96),rgba(12,17,25,.92)); box-shadow:0 14px 35px rgba(0,0,0,.32); }
+    .brand-lockup{ display:flex; align-items:center; gap:11px; padding:4px 7px 18px; }
+    .brand-mark{ width:40px; height:40px; display:grid; place-items:center; border-radius:13px; background:linear-gradient(135deg,var(--accent),var(--purple)); font-size:21px; box-shadow:0 8px 24px rgba(10,132,255,.28); }
+    .brand-name{ font-weight:800; letter-spacing:.2px; }
+    .brand-caption{ color:var(--muted); font-size:11px; margin-top:2px; }
+    .sidebar-label{ color:rgba(255,255,255,.42); font-size:10px; font-weight:800; letter-spacing:1.2px; padding:8px 10px; }
+    .sidebar-nav{ display:grid; gap:5px; }
+    .nav-item{ width:100%; display:flex; align-items:center; gap:10px; padding:11px 12px; border:1px solid transparent; border-radius:13px; background:transparent; color:var(--muted); font:inherit; font-size:13px; font-weight:650; text-align:left; cursor:pointer; transition:.18s ease; }
+    .nav-item:hover{ color:var(--text); background:rgba(255,255,255,.06); }
+    .nav-item.active{ color:#fff; border-color:rgba(10,132,255,.32); background:linear-gradient(90deg,rgba(10,132,255,.24),rgba(10,132,255,.08)); }
+    .nav-admin{ display:none; }
+    .nav-icon{ width:24px; text-align:center; font-size:16px; }
+    .sidebar-footer{ margin-top:20px; padding:14px 8px 0; border-top:1px solid var(--stroke); }
+    .sidebar-user{ color:var(--muted); font-size:11px; line-height:1.5; overflow-wrap:anywhere; }
+    .logout-btn{ width:100%; margin-top:10px; padding:10px; border:1px solid rgba(255,69,58,.3); border-radius:12px; color:#ff8a84; background:rgba(255,69,58,.09); font-weight:700; cursor:pointer; }
+    .app-main{ min-width:0; }
+    .app-topbar{ display:flex; justify-content:space-between; gap:14px; align-items:flex-start; margin-bottom:14px; }
+    .page-title{ margin:0; text-align:left; font-size:25px; }
+    .page-subtitle{ color:var(--muted); font-size:12px; margin-top:5px; }
+    .topbar-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .save-state{display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--stroke);border-radius:999px;color:var(--muted);font-size:10px;white-space:nowrap}
+    .save-state-dot{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+    .save-state[data-state="online"] .save-state-dot{background:var(--good)}.save-state[data-state="syncing"] .save-state-dot{background:var(--yellow)}.save-state[data-state="offline"] .save-state-dot{background:var(--bad)}
+    .validation-banner{margin-top:10px;padding:9px 11px;border:1px solid rgba(255,214,10,.28);border-radius:11px;background:rgba(255,214,10,.07);color:#ffe48a;font-size:11px;line-height:1.45}
+    input.field-invalid{border-color:rgba(255,69,58,.7);box-shadow:0 0 0 2px rgba(255,69,58,.12)}
+    .app-view{ display:none; animation:viewIn .2s ease; }
+    .app-view.active{ display:block; }
+    @keyframes viewIn{ from{opacity:.3;transform:translateY(4px)} to{opacity:1;transform:none} }
+    .dashboard-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:14px 0; }
+    .metric-card{ padding:16px; border:1px solid var(--stroke); border-radius:18px; background:var(--surface); min-height:112px; }
+    .metric-label{ color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.65px; }
+    .metric-value{ margin-top:13px; font-family:'JetBrains Mono',monospace; font-size:23px; font-weight:700; }
+    .metric-help{ margin-top:7px; color:rgba(255,255,255,.45); font-size:11px; }
+    .module-intro{ padding:19px; margin-bottom:14px; border:1px solid var(--stroke); border-radius:20px; background:linear-gradient(120deg,rgba(10,132,255,.11),rgba(191,90,242,.07)); }
+    .module-intro h2{ margin:0 0 6px; font-size:19px; }
+    .module-intro p{ margin:0; color:var(--muted); font-size:12px; line-height:1.6; }
+    .coming-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .coming-card{ padding:20px; border:1px dashed rgba(255,255,255,.18); border-radius:18px; background:rgba(255,255,255,.025); }
+    .coming-card h3{ margin:0 0 8px; }
+    .coming-card p{ margin:0; color:var(--muted); font-size:12px; line-height:1.55; }
+    .balance-form{ display:grid; grid-template-columns:2fr 1fr 1fr 1.2fr 1.2fr auto; gap:8px; align-items:center; }
+    .balance-actions{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 14px; }
+    .balance-actions button{ padding:10px 13px; border:1px solid var(--stroke); border-radius:12px; background:rgba(10,132,255,.16); color:var(--text); font-weight:700; cursor:pointer; }
+    .balance-kpis{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:9px; margin:12px 0; }
+    .balance-kpi{ padding:12px; border:1px solid var(--stroke); border-radius:15px; background:rgba(255,255,255,.035); }
+    .balance-kpi small{ display:block; color:var(--muted); margin-bottom:7px; }
+    .balance-kpi b{ font-family:'JetBrains Mono',monospace; font-size:17px; }
+    .station-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:11px; margin-top:12px; }
+    .station-card{ padding:14px; border:1px solid var(--stroke); border-radius:17px; background:rgba(255,255,255,.035); }
+    .station-head{ display:flex; justify-content:space-between; gap:8px; align-items:center; margin-bottom:10px; }
+    .station-load{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); }
+    .station-bar{ height:180px; display:flex; flex-direction:column-reverse; justify-content:flex-start; border:1px solid var(--stroke); border-radius:12px; overflow:hidden; background:repeating-linear-gradient(to top,transparent 0,transparent 24%,rgba(255,255,255,.08) 25%); position:relative; }
+    .station-segment{ min-height:18px; padding:4px 6px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:750; overflow:hidden; border-top:1px solid rgba(255,255,255,.2); }
+    .segment-va{background:rgba(52,199,89,.78)} .segment-nva{background:rgba(255,159,10,.78)} .segment-walk{background:rgba(191,90,242,.78)} .segment-machine{background:rgba(10,132,255,.78)}
+    .station-tasks{ margin-top:9px; display:grid; gap:5px; }
+    .station-task{ display:flex; justify-content:space-between; gap:8px; padding:7px 8px; border-radius:9px; background:rgba(255,255,255,.045); font-size:11px; cursor:grab; }
+    .station-card.drag-over{ border-color:var(--accent); background:rgba(10,132,255,.09); }
+    .precedence-error{ color:#ff8a84; font-size:10px; margin-top:7px; }
+    .scenario-toolbar{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:8px;margin-bottom:10px}
+    .scenario-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:14px}
+    .scenario-card{padding:14px;border:1px solid var(--stroke);border-radius:16px;background:rgba(255,255,255,.035)}
+    .scenario-card.selected{border-color:var(--accent);box-shadow:0 0 0 1px rgba(10,132,255,.18)}
+    .scenario-card-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+    .scenario-card h3{margin:0;font-size:15px}
+    .scenario-card small{color:var(--muted)}
+    .scenario-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}
+    .scenario-metric{padding:8px;border-radius:10px;background:rgba(255,255,255,.045)}
+    .scenario-metric span{display:block;color:var(--muted);font-size:10px}
+    .scenario-metric b{display:block;margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:12px}
+    .scenario-card-actions{display:flex;flex-wrap:wrap;gap:6px}
+    .scenario-card-actions button{padding:7px 9px;border:1px solid var(--stroke);border-radius:9px;background:rgba(10,132,255,.14);color:var(--text);cursor:pointer;font-size:10px;font-weight:700}
+    .scenario-compare-controls{display:grid;grid-template-columns:1fr auto 1fr;gap:9px;align-items:center;margin:12px 0}
+    .comparison-table td:nth-child(n+2){text-align:right;font-family:'JetBrains Mono',monospace}
+    .delta-good{color:#63dc83}.delta-bad{color:#ff8a84}.delta-neutral{color:var(--muted)}
+    .scenario-empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--stroke);border-radius:14px}
+    .report-actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .report-actions button{padding:10px 13px;border:1px solid var(--stroke);border-radius:11px;background:rgba(10,132,255,.14);color:var(--text);font-weight:750;cursor:pointer}
+    .report-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:18px;margin-bottom:12px;border:1px solid var(--stroke);border-radius:18px;background:linear-gradient(120deg,rgba(10,132,255,.1),rgba(52,199,89,.05))}
+    .report-header h2{margin:0 0 6px}.report-meta{color:var(--muted);font-size:11px;line-height:1.6;text-align:right}
+    .report-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin-bottom:12px}
+    .report-kpi{padding:13px;border:1px solid var(--stroke);border-radius:14px;background:rgba(255,255,255,.035)}
+    .report-kpi span{display:block;color:var(--muted);font-size:10px;min-height:26px}.report-kpi b{display:block;margin-top:5px;font-family:'JetBrains Mono',monospace;font-size:16px}
+    .report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .report-panel{padding:16px;border:1px solid var(--stroke);border-radius:17px;background:rgba(255,255,255,.03)}
+    .report-panel h3{margin:0 0 11px}
+    .report-diagnosis{display:grid;gap:7px}
+    .report-finding{padding:10px 12px;border-left:3px solid var(--muted);border-radius:9px;background:rgba(255,255,255,.035);font-size:11px;line-height:1.5}
+    .report-finding.good{border-color:var(--good)}.report-finding.warn{border-color:var(--yellow)}.report-finding.bad{border-color:var(--bad)}
+    .report-stations{display:grid;gap:7px}.report-station{display:grid;grid-template-columns:minmax(110px,1fr) 2fr auto;gap:9px;align-items:center;font-size:11px}
+    .report-load-track{height:9px;border-radius:20px;background:rgba(255,255,255,.08);overflow:hidden}.report-load-fill{height:100%;border-radius:20px;background:var(--good)}.report-load-fill.over{background:var(--bad)}
+    @media(max-width:1100px){.report-kpis{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.report-header{display:block}.report-meta{text-align:left;margin-top:10px}.report-kpis,.report-grid{grid-template-columns:1fr 1fr}}
+    @media print{
+      body{padding:0;background:#fff;color:#111}.app-sidebar,.app-topbar,.report-actions,#loginScreen{display:none!important}
+      #cronometroApp{display:block!important;max-width:none;margin:0;padding:0;border:0;box-shadow:none;background:#fff}.app-shell,.app-main{display:block}
+      .app-view{display:none!important}#reportsView{display:block!important}.module-intro{display:none}
+      .report-header,.report-kpi,.report-panel{background:#fff!important;border-color:#bbb!important;box-shadow:none;color:#111}
+      .report-meta,.report-kpi span,.hint{color:#444!important}.report-grid{grid-template-columns:1fr 1fr}.report-finding{background:#f6f6f6;color:#111}
+    }
+    @media(max-width:1100px){.balance-form{grid-template-columns:repeat(2,1fr)}.balance-kpis{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:1050px){ .dashboard-grid{grid-template-columns:repeat(2,1fr)} }
+    @media(max-width:760px){
+      body{padding:8px;padding-bottom:78px}
+      #cronometroApp{padding:10px;border-radius:18px}
+      .app-shell{display:block}
+      .app-sidebar{position:fixed;z-index:100;left:8px;right:8px;bottom:8px;top:auto;min-height:0;padding:7px;border-radius:18px;background:rgba(12,17,25,.96);backdrop-filter:blur(18px)}
+      .brand-lockup,.sidebar-label,.sidebar-footer{display:none}
+      .sidebar-nav{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+      .nav-item{padding:8px 3px;display:grid;place-items:center;gap:2px;font-size:9px;text-align:center}
+      .nav-icon{font-size:17px}
+      .nav-admin{display:none!important}
+      .app-topbar{align-items:center}
+      .page-title{font-size:21px}
+      .balance-form,.balance-kpis{grid-template-columns:1fr}
+      .dashboard-grid,.coming-grid,.scenario-toolbar,.scenario-compare-controls{grid-template-columns:1fr}
     }
 
     h1{
@@ -113,6 +234,22 @@
       box-shadow: 0 0 0 3px rgba(10,132,255,.18);
     }
     input::placeholder{ color: rgba(255,255,255,.45); }
+    .input-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .input-field label{color:rgba(255,255,255,.82);font-size:11px;font-weight:750;letter-spacing:.2px}
+    .input-field small{color:var(--muted);font-size:10px;line-height:1.4;min-height:28px}
+    .line-data-note{display:flex;align-items:center;padding:10px 12px;border:1px solid rgba(10,132,255,.18);border-radius:14px;background:rgba(10,132,255,.06);color:var(--muted);font-size:11px;line-height:1.45}
+    .study-toolbar{display:flex;align-items:center;gap:7px;padding:9px;margin-bottom:12px;border:1px solid var(--stroke);border-radius:16px;background:rgba(255,255,255,.035);overflow-x:auto;scrollbar-width:thin}
+    .study-search{display:flex;align-items:center;gap:6px;min-width:260px;flex:1}
+    .study-search input{min-width:190px;padding:9px 11px}
+    .tool-button{display:flex;align-items:center;gap:6px;white-space:nowrap;padding:9px 11px;border:1px solid var(--stroke);border-radius:11px;background:rgba(10,132,255,.12);color:var(--text);font-size:11px;font-weight:750;cursor:pointer}
+    .tool-select{width:auto;min-width:132px;padding:9px 32px 9px 11px;white-space:nowrap;border-radius:11px;background-color:rgba(10,132,255,.12);font-size:11px;font-weight:750;cursor:pointer}
+    .tool-button:hover{border-color:rgba(10,132,255,.55);background:rgba(10,132,255,.2)}
+    .tool-icon{font-size:15px;line-height:1}
+    details.tool-menu{position:relative;margin:0;padding:0;border:0;background:transparent;backdrop-filter:none}
+    .tool-menu>summary{list-style:none}
+    .tool-menu-panel{position:absolute;z-index:80;right:0;top:calc(100% + 6px);min-width:170px;padding:6px;border:1px solid var(--stroke);border-radius:12px;background:#20242b;box-shadow:0 14px 30px rgba(0,0,0,.42)}
+    .tool-menu-panel button{display:block;width:100%;padding:9px 10px;border:0;border-radius:8px;background:transparent;color:var(--text);text-align:left;cursor:pointer}
+    .tool-menu-panel button:hover{background:rgba(10,132,255,.17)}
 
     h3{ margin: 14px 0 8px; font-size: 14px; letter-spacing: .2px; color: rgba(255,255,255,.82); font-weight: 600; }
 
@@ -465,6 +602,11 @@
   color: white;
 }
 
+.login-btn.demo {
+  background: rgba(191,90,242,.18);
+  border: 1px solid rgba(191,90,242,.4);
+  color: #e6c8ff;
+}
 .login-link {
   margin-top: 14px;
   background: none;
@@ -509,7 +651,7 @@
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* 🔥 muy importante */
+  z-index: 9999;
 }
 
 
@@ -615,6 +757,7 @@
     <button class="login-btn secondary" onclick="register()">Crear cuenta</button>
 
     <button class="login-link" onclick="resetPassword()">¿Olvidaste tu contraseña?</button>
+    <button class="login-btn demo" onclick="startDemoMode()">Explorar modo demo</button>
 
     <p id="loginError" class="error-text"></p>
   </div>
@@ -660,22 +803,81 @@
         Datos de línea (Takt & Costos)
         <span class="chip">Takt: <span id="taktChip" class="value">—</span></span>
       </summary>
+      <div id="lineValidationMessage" class="validation-banner" role="status" aria-live="polite" hidden></div>
       <div class="grid-3 mt10">
-        <input id="jornadaMin" type="number" min="1" step="1" placeholder="Jornada diaria (min)" />
-        <input id="sueldoSemanal" type="number" min="0" step="0.01" placeholder="Sueldo semanal" />
-        <input id="demandaDiaria" type="number" min="1" step="1" placeholder="Demanda diaria (unid/día)" />
+        <div class="input-field">
+          <label for="jornadaMin">Jornada diaria (min)</label>
+          <input id="jornadaMin" type="number" min="1" step="1" placeholder="Ej. 480" />
+          <small>Tiempo total pagado del turno.</small>
+        </div>
+        <div class="input-field">
+          <label for="sueldoSemanal">Sueldo semanal por operador</label>
+          <input id="sueldoSemanal" type="number" min="0" step="0.01" placeholder="Ej. 2400" />
+          <small>Se usa para calcular costo por minuto y unidad.</small>
+        </div>
+        <div class="input-field">
+          <label for="demandaDiaria">Demanda diaria buena (unidades)</label>
+          <input id="demandaDiaria" type="number" min="1" step="1" placeholder="Ej. 500" />
+          <small>Unidades conformes que deben entregarse cada día.</small>
+        </div>
+      </div>
+      <div class="grid-3 mt10">
+        <div class="input-field">
+          <label for="comidaMin">Tiempo de comida (min)</label>
+          <input id="comidaMin" type="number" min="0" step="1" value="0" />
+          <small>Minutos sin producción por comida.</small>
+        </div>
+        <div class="input-field">
+          <label for="descansosMin">Descansos programados (min)</label>
+          <input id="descansosMin" type="number" min="0" step="1" value="0" />
+          <small>Suma diaria de pausas o descansos.</small>
+        </div>
+        <div class="input-field">
+          <label for="parosPlaneadosMin">Paros planeados (min)</label>
+          <input id="parosPlaneadosMin" type="number" min="0" step="1" value="0" />
+          <small>Limpieza, juntas, arranque u otros paros conocidos.</small>
+        </div>
+      </div>
+      <div class="grid-3 mt10">
+        <div class="input-field">
+          <label for="eficienciaPlanPct">Eficiencia planeada (%)</label>
+          <input id="eficienciaPlanPct" type="number" min="1" max="100" step="0.1" value="100" />
+          <small>Porcentaje realista del tiempo neto que se aprovecha.</small>
+        </div>
+        <div class="input-field">
+          <label for="scrapPct">Scrap esperado (%)</label>
+          <input id="scrapPct" type="number" min="0" max="99" step="0.1" value="0" />
+          <small>Porcentaje previsto de piezas rechazadas.</small>
+        </div>
+        <div class="line-data-note">La demanda diaria corresponde a unidades buenas. LeanTakt aumentará la producción requerida según el scrap esperado.</div>
       </div>
       <div class="grid-2 mt10">
-        <input id="diasSemana" type="number" min="1" max="7" step="1" value="6" placeholder="Días laborables/sem (default 6)" />
-        <select id="heijunkaInterval">
-          <option value="60">Heijunka: Intervalo 60 min</option>
-          <option value="30">Heijunka: Intervalo 30 min</option>
-          <option value="20">Heijunka: Intervalo 20 min</option>
-          <option value="15">Heijunka: Intervalo 15 min</option>
-        </select>
+        <div class="input-field">
+          <label for="diasSemana">Días laborables por semana</label>
+          <input id="diasSemana" type="number" min="1" max="7" step="1" value="6" />
+          <small>Se utiliza para distribuir el sueldo semanal.</small>
+        </div>
+        <div class="input-field">
+          <label for="heijunkaInterval">Intervalo Heijunka</label>
+          <select id="heijunkaInterval">
+            <option value="60">Cada 60 min</option>
+            <option value="30">Cada 30 min</option>
+            <option value="20">Cada 20 min</option>
+            <option value="15">Cada 15 min</option>
+          </select>
+          <small>Periodo usado para nivelar y visualizar la producción.</small>
+        </div>
       </div>
 
       <div class="results-card glass mt10">
+        <div class="result-row">
+          <span>Tiempo neto / efectivo</span>
+          <span id="tiempoNetoOut" class="value">—</span>
+        </div>
+        <div class="result-row">
+          <span>Demanda bruta con scrap</span>
+          <span id="demandaBrutaOut" class="value">—</span>
+        </div>
         <div class="result-row">
           <span>Takt time</span>
           <span id="taktOut" class="value">—</span>
@@ -685,13 +887,17 @@
           <span id="costoMinOut" class="value">—</span>
         </div>
         <div class="result-row">
-          <span>Ritmo objetivo</span>
+          <span>Ciclo objetivo planeado</span>
           <span id="ritmoOut" class="value">—</span>
+        </div>
+        <div class="result-row">
+          <span>Ritmo de unidades buenas</span>
+          <span id="ritmoBuenoOut" class="value">—</span>
         </div>
         <div class="divider"></div>
         <div class="hint">
-          <b>Takt</b> = Tiempo disponible / Demanda. <b>Costo/min</b> = Sueldo semanal / (Jornada diaria × Días/sem).
-          Con esto el balanceo marca como <b>cuello de botella</b> cualquier operación con Tiempo Estándar &gt; Takt.
+          <b>Takt</b> = Tiempo neto / Demanda buena. El ciclo objetivo además considera eficiencia planeada y scrap.
+          El balanceo marca como <b>cuello de botella</b> cualquier operación con Tiempo Estándar &gt; ciclo objetivo.
         </div>
       </div>
     </details>
@@ -790,36 +996,9 @@
       </div>
     </details>
 
-    <!-- Guardar / Exportar -->
     <div class="btnRow">
-      <button class="btn save" onclick="saveOperation()">Guardar Operación</button>
-      <button class="btn export" onclick="exportCSV()">Exportar CSV</button>
-       <button class="btn export2" onclick="exportXLSX_ExcelJS()">Exportar XLSX (pro)</button>
+      <button class="btn save" onclick="saveOperation()">Guardar operación cronometrada</button>
     </div>
-    <div class="btnRow">
-      
-      <button class="btn" onclick="clearAllOperations()">Nuevo Estudio</button>
-      <button class="btn" onclick="abrirModalEstudios()">📂 Estudios</button>
-      <button class="btn" onclick="openAdminModal()">Admin</button>
-    </div>
-    
-  <div class="opsCard glass mt10">
-      <div style="font-weight:800; margin-bottom:10px;">🔎 Buscar Estudio</div>
-       <div id="cloudSearchStatus" class="cloudStatus" data-state="offline">
-        <input id="buscarFolio" placeholder="Ingresa folio (LT-...)" />
-        <button onclick="buscarPorFolioInput()" style="
-           background: rgba(163, 58, 255, 0.8);
-           border:none;
-           padding:8px 12px;
-           border-radius:10px;
-           color:white;
-           font-weight:700;
-           cursor:pointer;
-           ">
-            Buscar estudio
-          </button>
-      </div>
-    </div> 
 
     <!-- Operaciones guardadas -->
     <div class="opsCard glass mt10">
@@ -842,7 +1021,7 @@
               <tr>
                 <th>Operación</th>
                 <th>Tiempo Estándar</th>
-                <th>Takt</th>
+                <th>Objetivo planeado</th>
                 <th>Estatus</th>
                 <th>Capacidad (unid/día por operador)</th>
                 <th>Operadores requeridos</th>
@@ -857,9 +1036,9 @@
 
         <div class="chartsGrid mt10">
           <div>
-            <div class="chip" style="margin-bottom:8px;">📈 Yamazumi (Tiempo estándar vs Takt)</div>
+            <div class="chip" style="margin-bottom:8px;">📈 Yamazumi (Tiempo estándar vs objetivo)</div>
             <canvas id="yamazumiCanvas" width="900" height="360"></canvas>
-            <div class="hint mt10">Barras rojas: operación arriba del Takt (cuello de botella). Línea punteada: Takt.</div>
+            <div class="hint mt10">Barras rojas: operación arriba del ciclo objetivo planeado. Línea punteada: objetivo.</div>
           </div>
           <div>
             <div class="chip" style="margin-bottom:8px;">🧩 Heijunka (Nivelación por intervalos)</div>
@@ -884,15 +1063,16 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut,
-  sendPasswordResetEmail  // ✅ AGREGA ESTO
+  sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
   import {
     doc,
     updateDoc,
-    enableIndexedDbPersistence,
     getDoc,
-    getFirestore,
+    initializeFirestore,
+    persistentLocalCache,
+    persistentMultipleTabManager,
     serverTimestamp,
     setDoc
   } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
@@ -916,10 +1096,14 @@ import {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+  });
+  const APP_VERSION = '2.12';
   const STUDY_ID_KEY = 'leantakt_activeStudyId_v1';
   const DEVICE_ID_KEY = 'leantakt_deviceId_v1';
   let currentUser = null;
+  let isDemoMode = false;
   let cloudState = { state: 'syncing', text: 'Conectando con Firebase...' };
   let readyResolve;
   
@@ -955,8 +1139,6 @@ import {
    if (!user) throw new Error("Usuario no autenticado");
     const studyRef = getStudyRef();
     
-// ✅ AGREGA ESTA LÍNEA
-  console.log("📤 Enviando a Firebase:", snapshot);
 
 if (!window.currentFolio) {
   window.currentFolio = generarFolio();
@@ -979,7 +1161,6 @@ document.getElementById("folioDisplay").innerText =
 window.currentFolio = snapshotConFolio.folio;
 updateUserBadge(); // ✅ ESTA ES LA CLAVE
 
-console.log("📄 Folio asignado:", snapshotConFolio.folio);
 
 await setDoc(studyRef, {
   appName: 'LeanTakt',
@@ -1001,16 +1182,13 @@ await setDoc(studyRef, {
 }
     const snap = await getDoc(getStudyRef());
     if (!snap.exists()) {
-      emit('online', 'Firebase listo Â· sin estudio previo');
+      emit('online', 'Firebase listo · sin estudio previo');
       return null;
     }
     emit('online', 'Estudio cargado desde Firebase');
     return snap.data();
   }
 
-  enableIndexedDbPersistence(db).catch(error => {
-    console.warn('Persistencia offline de Firestore no disponible', error);
-  });
 
  onAuthStateChanged(auth, async (user) => {
 
@@ -1029,7 +1207,7 @@ await setDoc(studyRef, {
      
 const data = userSnap.data();
 
-window.userData = data; // ✅ AGREGA ESTO
+window.userData = data;
 
 updateUserBadge(); // ✅ en lugar de innerHTML
 
@@ -1060,13 +1238,9 @@ updateUserBadge(); // ✅ en lugar de innerHTML
       const rol = data.rol || "sin rol";
 
 
-      // ✅ Mostrar panel admin solo si es admin
-      const adminPanel = document.getElementById("adminPanel");
-      if (rol === "admin") {
-      document.querySelector('button[onclick="openAdminModal()"]').style.display = "block";
-       } else {
-       document.querySelector('button[onclick="openAdminModal()"]').style.display = "none";
-    }
+      // Mostrar el acceso administrativo del sidebar solo cuando corresponde.
+      const adminButton = document.getElementById('sidebarAdminBtn');
+      if (adminButton) adminButton.style.display = rol === 'admin' ? 'flex' : 'none';
 
       // ✅ Liberar bloqueo de Firebase (IMPORTANTE)
       if (readyResolve) readyResolve();
@@ -1078,6 +1252,7 @@ updateUserBadge(); // ✅ en lugar de innerHTML
     }
 
   } else {
+    if (isDemoMode) return;
     // 🔒 Sin sesión → mostrar login
     document.getElementById("loginScreen").style.display = "flex";
     document.getElementById("cronometroApp").style.display = "none";
@@ -1285,6 +1460,11 @@ updateUserBadge(); // ✅ en lugar de innerHTML
       jornadaMin: parseNum('jornadaMin'),
       sueldoSemanal: parseNum('sueldoSemanal'),
       demandaDiaria: parseNum('demandaDiaria'),
+      comidaMin: parseNum('comidaMin'),
+      descansosMin: parseNum('descansosMin'),
+      parosPlaneadosMin: parseNum('parosPlaneadosMin'),
+      eficienciaPlanPct: parseNum('eficienciaPlanPct'),
+      scrapPct: parseNum('scrapPct'),
       diasSemana: parseNum('diasSemana'),
       heijunkaInterval: parseNum('heijunkaInterval') || Number(document.getElementById('heijunkaInterval').value)
     };
@@ -1293,6 +1473,8 @@ updateUserBadge(); // ✅ en lugar de innerHTML
   function makeStudySnapshot(){
     return {
       lineSettings: getLineSettingsSnapshot(),
+      balanceModel: JSON.parse(JSON.stringify(balanceModel)),
+      scenarios: JSON.parse(JSON.stringify(scenarioModel)),
       operations: savedOps.map(op => ({
         ...op,
         laps: Array.isArray(op.laps) ? op.laps.slice(0) : [],
@@ -1305,17 +1487,27 @@ updateUserBadge(); // ✅ en lugar de innerHTML
   function updateCloudStatus(state, text){
     const box = document.getElementById('cloudStatus');
     const label = document.getElementById('cloudStatusText');
-    if (!box || !label) return;
-    box.dataset.state = state || 'offline';
-    label.textContent = text || 'Firebase pendiente';
+    const topState = document.getElementById('appSaveStatus');
+    const topLabel = document.getElementById('appSaveStatusText');
+    const nextState = state || 'offline';
+    const nextText = text || 'Firebase pendiente';
+    if (box) box.dataset.state = nextState;
+    if (label) label.textContent = nextText;
+    if (topState) topState.dataset.state = nextState;
+    if (topLabel) topLabel.textContent = nextText;
   }
 
   function queueCloudSync(){
     clearTimeout(cloudSyncTimer);
+    updateCloudStatus('syncing','Cambios pendientes');
     cloudSyncTimer = setTimeout(() => syncCloudNow(false), 900);
   }
 
   async function syncCloudNow(showAlerts){
+    if (isDemoMode) {
+      updateCloudStatus('offline','Modo demo · los cambios no se guardan');
+      return true;
+    }
     if (!window.LeanTaktCloud) {
       updateCloudStatus('offline', 'Firebase no esta disponible');
       return;
@@ -1330,7 +1522,30 @@ updateUserBadge(); // ✅ en lugar de innerHTML
     }
   }
 
+  async function saveStudyAs(){
+    if (isDemoMode) {
+      alert('El modo demo no guarda estudios. Inicia sesión para usar Guardar como.');
+      return;
+    }
+    const nameInput = document.getElementById('nombreEstudio');
+    const currentName = (nameInput?.value || '').trim();
+    const requestedName = prompt('Nombre para la copia del estudio:', currentName || 'Copia del estudio');
+    if (requestedName === null) return;
+    const name = requestedName.trim();
+    if (!name) {
+      alert('Escribe un nombre para guardar la copia.');
+      return;
+    }
+    if (nameInput) nameInput.value = name;
+    localStorage.removeItem(STUDY_ID_KEY);
+    window.currentFolio = generarFolio();
+    document.getElementById('folioDisplay').innerText = 'Folio: ' + window.currentFolio;
+    updateUserBadge();
+    await syncCloudNow(true);
+  }
+
   function saveOpsLS(){
+    if (isDemoMode) { updateCloudStatus('offline','Modo demo · los cambios no se guardan'); return; }
     localStorage.setItem(LS_OPS_V3, JSON.stringify(savedOps));
     queueCloudSync();
   }
@@ -1351,6 +1566,7 @@ updateUserBadge(); // ✅ en lugar de innerHTML
   }
 
   function saveLineLS(){
+    if (isDemoMode) { updateCloudStatus('offline','Modo demo · los cambios no se guardan'); return; }
     localStorage.setItem(LS_LINE, JSON.stringify(getLineSettingsSnapshot()));
     queueCloudSync();
   }
@@ -1359,6 +1575,11 @@ updateUserBadge(); // ✅ en lugar de innerHTML
     if (isFinite(d.jornadaMin)) document.getElementById('jornadaMin').value = d.jornadaMin;
     if (isFinite(d.sueldoSemanal)) document.getElementById('sueldoSemanal').value = d.sueldoSemanal;
     if (isFinite(d.demandaDiaria)) document.getElementById('demandaDiaria').value = d.demandaDiaria;
+    document.getElementById('comidaMin').value = isFinite(d.comidaMin) ? d.comidaMin : 0;
+    document.getElementById('descansosMin').value = isFinite(d.descansosMin) ? d.descansosMin : 0;
+    document.getElementById('parosPlaneadosMin').value = isFinite(d.parosPlaneadosMin) ? d.parosPlaneadosMin : 0;
+    document.getElementById('eficienciaPlanPct').value = isFinite(d.eficienciaPlanPct) ? d.eficienciaPlanPct : 100;
+    document.getElementById('scrapPct').value = isFinite(d.scrapPct) ? d.scrapPct : 0;
     if (isFinite(d.diasSemana)) document.getElementById('diasSemana').value = d.diasSemana;
     if (isFinite(d.heijunkaInterval)) document.getElementById('heijunkaInterval').value = String(d.heijunkaInterval);
   }
@@ -1375,7 +1596,7 @@ updateUserBadge(); // ✅ en lugar de innerHTML
   // Guardar / Listar / Cargar / Eliminar operaciones
   // ==========================
   function saveOperation() {
-     if (!auth.currentUser) {
+     if (!auth.currentUser && !isDemoMode) {
      alert("Debes iniciar sesión primero");
       return;
     }
@@ -1548,9 +1769,20 @@ function goBackDetail() {
 }
 
  function clearAllOperations() {
+  if (isDemoMode) {
+    if (!confirm('¿Reiniciar el ejemplo completo del modo demo?')) return;
+    startDemoMode();
+    return;
+  }
   if (!confirm('¿Borrar todas las operaciones guardadas y reiniciar estudio?')) return;
 
   savedOps = [];
+  balanceModel = { elements: [], stations: [{ id:'station-1', name:'Estacion 1' }] };
+  localStorage.removeItem(LS_BALANCE);
+  scenarioModel = { items: [], baselineId: null, proposedId: null };
+  localStorage.removeItem(LS_SCENARIOS);
+  renderScenarioUI();
+  renderBalanceDesigner();
 
   localStorage.removeItem(LS_OPS_V3);
   localStorage.removeItem(LS_OPS_V2);
@@ -1578,28 +1810,98 @@ function goBackDetail() {
     const jornadaMin = parseNum('jornadaMin');
     const sueldoSemanal = parseNum('sueldoSemanal');
     const demandaDiaria = parseNum('demandaDiaria');
+    const comidaMin = Math.max(0, parseNum('comidaMin') || 0);
+    const descansosMin = Math.max(0, parseNum('descansosMin') || 0);
+    const parosPlaneadosMin = Math.max(0, parseNum('parosPlaneadosMin') || 0);
+    const eficienciaPlanPct = clamp(parseNum('eficienciaPlanPct') || 100, 1, 100);
+    const scrapPct = clamp(parseNum('scrapPct') || 0, 0, 99);
     let diasSemana = parseNum('diasSemana');
     if (!isFinite(diasSemana) || diasSemana <= 0) diasSemana = 6;
     const intervalMin = Number(document.getElementById('heijunkaInterval').value || 60);
 
-    const valid = isFinite(jornadaMin) && jornadaMin > 0 && isFinite(demandaDiaria) && demandaDiaria > 0;
-    const taktMin = valid ? (jornadaMin / demandaDiaria) : NaN;
+    const deduccionesMin = comidaMin + descansosMin + parosPlaneadosMin;
+    const tiempoNetoMin = isFinite(jornadaMin) ? Math.max(0, jornadaMin - deduccionesMin) : NaN;
+    const tiempoEfectivoMin = isFinite(tiempoNetoMin) ? tiempoNetoMin * (eficienciaPlanPct / 100) : NaN;
+    const demandaBruta = isFinite(demandaDiaria) && demandaDiaria > 0 ? demandaDiaria / (1 - scrapPct / 100) : NaN;
+    const valid = isFinite(tiempoNetoMin) && tiempoNetoMin > 0 && isFinite(demandaDiaria) && demandaDiaria > 0;
+    const taktMin = valid ? (tiempoNetoMin / demandaDiaria) : NaN;
     const taktSec = valid ? (taktMin * 60) : NaN;
+    const cicloObjetivoMin = valid && isFinite(demandaBruta) ? tiempoEfectivoMin / demandaBruta : NaN;
+    const cicloObjetivoSec = isFinite(cicloObjetivoMin) ? cicloObjetivoMin * 60 : NaN;
 
     const validCost = valid && isFinite(sueldoSemanal) && sueldoSemanal >= 0;
     const costoMin = validCost ? (sueldoSemanal / (jornadaMin * diasSemana)) : NaN;
 
-    const unidadesPorHora = valid ? (demandaDiaria / (jornadaMin / 60)) : NaN;
+    const unidadesPorHora = valid ? (demandaDiaria / (tiempoNetoMin / 60)) : NaN;
 
-    return { jornadaMin, sueldoSemanal, demandaDiaria, diasSemana, intervalMin, taktMin, taktSec, costoMin, unidadesPorHora };
+    return { jornadaMin, sueldoSemanal, demandaDiaria, comidaMin, descansosMin, parosPlaneadosMin, deduccionesMin,
+      eficienciaPlanPct, scrapPct, tiempoNetoMin, tiempoEfectivoMin, demandaBruta, diasSemana, intervalMin,
+      taktMin, taktSec, cicloObjetivoMin, cicloObjetivoSec, costoMin, unidadesPorHora };
+  }
+
+  function validateLineInputs(params){
+    const issues = [];
+    const invalidIds = new Set();
+    if (!(params.jornadaMin > 0)) {
+      issues.push('Captura una jornada diaria mayor que cero.');
+      invalidIds.add('jornadaMin');
+    }
+    if (!(params.demandaDiaria > 0)) {
+      issues.push('Captura una demanda diaria mayor que cero.');
+      invalidIds.add('demandaDiaria');
+    }
+    if (!isFinite(params.sueldoSemanal) || params.sueldoSemanal < 0) {
+      issues.push('Captura el sueldo semanal por operador.');
+      invalidIds.add('sueldoSemanal');
+    }
+    if (params.jornadaMin > 0 && params.deduccionesMin >= params.jornadaMin) {
+      issues.push('Comida, descansos y paros deben sumar menos que la jornada.');
+      ['comidaMin','descansosMin','parosPlaneadosMin'].forEach(id => invalidIds.add(id));
+    }
+    const efficiency = parseNum('eficienciaPlanPct');
+    const scrap = parseNum('scrapPct');
+    const days = parseNum('diasSemana');
+    if (!(efficiency > 0 && efficiency <= 100)) {
+      issues.push('La eficiencia planeada debe estar entre 1% y 100%.');
+      invalidIds.add('eficienciaPlanPct');
+    }
+    if (!(scrap >= 0 && scrap < 100)) {
+      issues.push('El scrap esperado debe estar entre 0% y 99%.');
+      invalidIds.add('scrapPct');
+    }
+    if (!(days >= 1 && days <= 7)) {
+      issues.push('Los días laborables deben estar entre 1 y 7.');
+      invalidIds.add('diasSemana');
+    }
+    ['jornadaMin','sueldoSemanal','demandaDiaria','comidaMin','descansosMin','parosPlaneadosMin','eficienciaPlanPct','scrapPct','diasSemana'].forEach(id => {
+      const field = document.getElementById(id);
+      if (!field) return;
+      const invalid = invalidIds.has(id);
+      field.classList.toggle('field-invalid',invalid);
+      field.setAttribute('aria-invalid',invalid ? 'true' : 'false');
+    });
+    const banner = document.getElementById('lineValidationMessage');
+    if (banner) {
+      banner.hidden = issues.length === 0;
+      banner.textContent = issues.join(' ');
+    }
+    return issues.length === 0;
   }
 
   function updateLineOutputs(){
     const p = getLineParams();
 
+    validateLineInputs(p);
     // chips
     const taktChip = document.getElementById('taktChip');
     taktChip.textContent = isFinite(p.taktMin) ? `${fmtNum(p.taktMin,2)} min/ud` : '—';
+
+    document.getElementById('tiempoNetoOut').textContent = isFinite(p.tiempoNetoMin)
+      ? `${fmtNum(p.tiempoNetoMin,1)} / ${fmtNum(p.tiempoEfectivoMin,1)} min`
+      : '—';
+    document.getElementById('demandaBrutaOut').textContent = isFinite(p.demandaBruta)
+      ? `${fmtNum(p.demandaBruta,1)} unid/día (${fmtNum(p.scrapPct,1)}% scrap)`
+      : '—';
 
     // outputs
     document.getElementById('taktOut').textContent = isFinite(p.taktMin)
@@ -1610,8 +1912,11 @@ function goBackDetail() {
       ? `${fmtMoney(p.costoMin)} / min`
       : '—';
 
-    document.getElementById('ritmoOut').textContent = isFinite(p.unidadesPorHora)
-      ? `${fmtNum(p.unidadesPorHora,2)} unid/h  (${fmtNum(p.taktSec,1)} s por unidad)`
+    document.getElementById('ritmoOut').textContent = isFinite(p.cicloObjetivoSec)
+      ? `${fmtNum(p.cicloObjetivoSec,1)} s/unidad bruta`
+      : '—';
+    document.getElementById('ritmoBuenoOut').textContent = isFinite(p.unidadesPorHora)
+      ? `${fmtNum(p.unidadesPorHora,2)} unidades buenas/h`
       : '—';
   }
 
@@ -1636,18 +1941,19 @@ function goBackDetail() {
     const p = getLineParams();
     const ops = getOpsForAnalysis();
 
-    if (!isFinite(p.taktMin) || !isFinite(p.demandaDiaria) || ops.length === 0){
+    if (!isFinite(p.cicloObjetivoMin) || !isFinite(p.demandaDiaria) || ops.length === 0){
       return { rows: [], params: p, ops };
     }
 
     const rows = ops.map(op => {
       const stSec = op.summary?.estandar || 0;
       const stMin = stSec / 60;
-      const ratio = p.taktMin > 0 ? (stMin / p.taktMin) : NaN;
+      const ratio = p.cicloObjetivoMin > 0 ? (stMin / p.cicloObjetivoMin) : NaN;
       const bottleneck = isFinite(ratio) ? (ratio > 1.0) : false;
 
-      const capacityPerOp = stMin > 0 ? (p.jornadaMin / stMin) : Infinity; // unid/día por operador
-      let opsReq = stMin > 0 ? Math.ceil((p.demandaDiaria * stMin) / p.jornadaMin) : 0;
+      const yieldFactor = 1 - p.scrapPct / 100;
+      const capacityPerOp = stMin > 0 ? (p.tiempoEfectivoMin / stMin) * yieldFactor : Infinity;
+      let opsReq = stMin > 0 ? Math.ceil((p.demandaBruta * stMin) / p.tiempoEfectivoMin) : 0;
       if (stMin > 0) opsReq = Math.max(1, opsReq);
 
       const directCostUnit = isFinite(p.costoMin) ? (stMin * p.costoMin) : NaN;
@@ -1657,8 +1963,8 @@ function goBackDetail() {
       return {
         operacion: op.operacion,
         stSec, stMin,
-        taktMin: p.taktMin,
-        taktSec: p.taktSec,
+        taktMin: p.cicloObjetivoMin,
+        taktSec: p.cicloObjetivoSec,
         ratio,
         bottleneck,
         capacityPerOp,
@@ -1677,6 +1983,11 @@ function goBackDetail() {
 
   function updateBalanceUI(){
     updateLineOutputs();
+    updateDashboardMetrics();
+    if (document.getElementById('stationGrid')) {
+      renderStationYamazumi(getPrecedenceViolations());
+      updateFormalBalanceMetrics();
+    }
     const out = buildBalanceRows();
     const { rows, params } = out;
 
@@ -1743,7 +2054,8 @@ function goBackDetail() {
     const chartW = w - padL - padR;
     const chartH = h - padT - padB;
 
-    const maxVal = Math.max(params.taktSec || 0, ...rows.map(r => r.stSec)) * 1.15;
+    const referenceSec = params.cicloObjetivoSec;
+    const maxVal = Math.max(referenceSec || 0, ...rows.map(r => r.stSec)) * 1.15;
     const yScale = (v) => padT + chartH - (v / (maxVal || 1)) * chartH;
 
     // grid
@@ -1767,8 +2079,8 @@ function goBackDetail() {
     }
 
     // takt line
-    if (isFinite(params.taktSec)){
-      const yT = yScale(params.taktSec);
+    if (isFinite(referenceSec)){
+      const yT = yScale(referenceSec);
       ctx.strokeStyle = 'rgba(255,214,10,.95)';
       ctx.lineWidth = 2;
       ctx.setLineDash([6,6]);
@@ -1781,7 +2093,7 @@ function goBackDetail() {
       ctx.fillStyle = 'rgba(255,214,10,.95)';
       ctx.font = '12px Inter, Arial';
       ctx.textAlign = 'left';
-      ctx.fillText('TAKT', padL+6, yT-10);
+      ctx.fillText('OBJETIVO', padL+6, yT-10);
     }
 
     // bars
@@ -1867,8 +2179,8 @@ function goBackDetail() {
     const meta = document.getElementById('heijunkaMeta');
     if (!grid || !meta) return;
 
-    const jornada = params.jornadaMin;
-    const demand = params.demandaDiaria;
+    const jornada = params.tiempoNetoMin;
+    const demand = Math.ceil(params.demandaBruta);
     const interval = params.intervalMin;
 
     if (!isFinite(jornada) || !isFinite(demand) || jornada <= 0 || demand <= 0) {
@@ -1893,7 +2205,7 @@ function goBackDetail() {
     for (let k=0;k<remaining;k++) base[fracIdx[k % fracIdx.length].i] += 1;
 
     // meta
-    meta.innerHTML = `Jornada: <b>${fmtNum(jornada,0)} min</b> • Demanda: <b>${fmtNum(demand,0)} unid/día</b> • Intervalos: <b>${buckets}</b> (≈ ${fmtNum(intervalReal,1)} min c/u) • Pitch aprox: <b>${fmtNum(params.taktMin,2)} min</b>`;
+    meta.innerHTML = `Tiempo neto: <b>${fmtNum(jornada,0)} min</b> • Producción bruta: <b>${fmtNum(demand,0)} unid/día</b> • Intervalos: <b>${buckets}</b> (≈ ${fmtNum(intervalReal,1)} min c/u) • Ciclo objetivo: <b>${fmtNum(params.cicloObjetivoMin,2)} min</b>`;
 
     // render grid
     
@@ -1943,8 +2255,8 @@ function goBackDetail() {
 
     // Parámetros de línea
     csv += 'PARAMETROS DE LINEA\n';
-    csv += 'Jornada_min,Sueldo_semanal,Demanda_diaria,Dias_semana,Takt_min,Takt_seg,Costo_min\n';
-    csv += `${p.jornadaMin || ''},${p.sueldoSemanal || ''},${p.demandaDiaria || ''},${p.diasSemana || ''},${isFinite(p.taktMin)?p.taktMin.toFixed(6):''},${isFinite(p.taktSec)?p.taktSec.toFixed(3):''},${isFinite(p.costoMin)?p.costoMin.toFixed(6):''}\n\n`;
+    csv += 'Jornada_min,Comida_min,Descansos_min,Paros_planeados_min,Tiempo_neto_min,Eficiencia_pct,Scrap_pct,Demanda_buena,Demanda_bruta,Dias_semana,Takt_seg,Ciclo_objetivo_seg,Costo_min\n';
+    csv += `${p.jornadaMin || ''},${p.comidaMin},${p.descansosMin},${p.parosPlaneadosMin},${p.tiempoNetoMin},${p.eficienciaPlanPct},${p.scrapPct},${p.demandaDiaria || ''},${isFinite(p.demandaBruta)?p.demandaBruta.toFixed(3):''},${p.diasSemana || ''},${isFinite(p.taktSec)?p.taktSec.toFixed(3):''},${isFinite(p.cicloObjetivoSec)?p.cicloObjetivoSec.toFixed(3):''},${isFinite(p.costoMin)?p.costoMin.toFixed(6):''}\n\n`;
 
     // Detalle laps
     csv += 'DETALLE (Ciclos por operación)\n';
@@ -1962,11 +2274,24 @@ function goBackDetail() {
 
     // Balanceo
     csv += '\nBALANCEO DE LINEA\n';
-    csv += 'Operacion,TiempoEstandar_min,Takt_min,Estatus,Capacidad_unid_dia_por_operador,Operadores_req,Costo_min,Costo_unidad_directo,Costo_unidad_con_staff\n';
+    csv += 'Operacion,TiempoEstandar_min,CicloObjetivo_min,Estatus,Capacidad_buena_unid_dia_por_operador,Operadores_req,Costo_min,Costo_unidad_directo,Costo_unidad_con_staff\n';
     bal.forEach(r => {
       const est = r.bottleneck ? 'Cuello' : (r.ratio > 0.90 ? 'Al limite' : 'OK');
       csv += `${r.operacion},${(r.stMin).toFixed(6)},${(r.taktMin).toFixed(6)},${est},${isFinite(r.capacityPerOp)?r.capacityPerOp.toFixed(3):''},${r.opsReq},${isFinite(r.costoMin)?r.costoMin.toFixed(6):''},${isFinite(r.directCostUnit)?r.directCostUnit.toFixed(6):''},${isFinite(r.costUnitStaff)?r.costUnitStaff.toFixed(6):''}\n`;
     });
+    const executive = getExecutiveReportData();
+    csv += '\nRESUMEN EJECUTIVO\n';
+    csv += 'Indicador,Valor\n';
+    csv += `Ciclo_objetivo_seg,${executive.metrics.targetSec.toFixed(2)}\n`;
+    csv += `Contenido_trabajo_seg,${executive.metrics.workContentSec.toFixed(2)}\n`;
+    csv += `Estaciones,${executive.metrics.stations}\n`;
+    csv += `Eficiencia_balance_pct,${executive.metrics.efficiencyPct.toFixed(2)}\n`;
+    csv += `Capacidad_buena_dia,${executive.metrics.capacityGood.toFixed(2)}\n`;
+    csv += `Costo_unidad,${executive.metrics.costPerGoodUnit.toFixed(4)}\n`;
+    csv += '\nDIAGNOSTICO Y RECOMENDACIONES\n';
+    csv += 'Nivel,Recomendacion\n';
+    executive.findings.forEach(item => { csv += `${item.level},${JSON.stringify(item.text)}\n`; });
+
 
     let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     let link = document.createElement('a');
@@ -2017,6 +2342,30 @@ function goBackDetail() {
     }
 
     // PARAMETROS
+    const executive = getExecutiveReportData();
+    const wsE = wb.addWorksheet('Resumen ejecutivo', { views: [{ state:'frozen', ySplit:1 }] });
+    wsE.columns = [
+      { header:'Sección', key:'section', width:24 },
+      { header:'Indicador', key:'indicator', width:34 },
+      { header:'Valor', key:'value', width:22 }
+    ];
+    styleHeaderRow(wsE.getRow(1));
+    [
+      ['Identificación','Estudio',(document.getElementById('nombreEstudio')?.value || 'Estudio LeanTakt')],
+      ['Identificación','Folio',window.currentFolio || ''],
+      ['Resultado','Ciclo objetivo (s)',Number(executive.metrics.targetSec.toFixed(2))],
+      ['Resultado','Contenido de trabajo (s)',Number(executive.metrics.workContentSec.toFixed(2))],
+      ['Resultado','Estaciones / operadores',executive.metrics.stations],
+      ['Resultado','Eficiencia de balance (%)',Number(executive.metrics.efficiencyPct.toFixed(2))],
+      ['Resultado','Capacidad buena/día',Number(executive.metrics.capacityGood.toFixed(2))],
+      ['Resultado','Costo por unidad',Number(executive.metrics.costPerGoodUnit.toFixed(4))]
+    ].forEach(([section,indicator,value]) => wsE.addRow({section,indicator,value}));
+    executive.findings.forEach(item => wsE.addRow({section:`Diagnóstico: ${item.level}`,indicator:item.text,value:''}));
+    wsE.eachRow((row,rowNumber) => {
+      if (rowNumber === 1) return;
+      row.eachCell(cell => { cell.border = thinBorder; cell.alignment = {vertical:'middle',horizontal:'left',wrapText:true}; });
+    });
+
     const wsP = wb.addWorksheet('Parametros', { views: [{ state: 'frozen', ySplit: 1 }] });
     wsP.columns = [
       { header: 'Parametro', key: 'k', width: 26 },
@@ -2024,11 +2373,20 @@ function goBackDetail() {
     ];
     styleHeaderRow(wsP.getRow(1));
     wsP.addRow({ k: 'Jornada diaria (min)', v: isFinite(p.jornadaMin)? p.jornadaMin : '' });
+    wsP.addRow({ k: 'Comida (min)', v: p.comidaMin });
+    wsP.addRow({ k: 'Descansos (min)', v: p.descansosMin });
+    wsP.addRow({ k: 'Paros planeados (min)', v: p.parosPlaneadosMin });
+    wsP.addRow({ k: 'Tiempo neto (min)', v: isFinite(p.tiempoNetoMin)? Number(p.tiempoNetoMin.toFixed(3)) : '' });
+    wsP.addRow({ k: 'Tiempo efectivo (min)', v: isFinite(p.tiempoEfectivoMin)? Number(p.tiempoEfectivoMin.toFixed(3)) : '' });
+    wsP.addRow({ k: 'Eficiencia planeada (%)', v: p.eficienciaPlanPct });
+    wsP.addRow({ k: 'Scrap esperado (%)', v: p.scrapPct });
     wsP.addRow({ k: 'Sueldo semanal', v: isFinite(p.sueldoSemanal)? p.sueldoSemanal : '' });
-    wsP.addRow({ k: 'Demanda diaria (unid)', v: isFinite(p.demandaDiaria)? p.demandaDiaria : '' });
+    wsP.addRow({ k: 'Demanda buena diaria', v: isFinite(p.demandaDiaria)? p.demandaDiaria : '' });
+    wsP.addRow({ k: 'Demanda bruta diaria', v: isFinite(p.demandaBruta)? Number(p.demandaBruta.toFixed(3)) : '' });
     wsP.addRow({ k: 'Días laborables/sem', v: isFinite(p.diasSemana)? p.diasSemana : '' });
     wsP.addRow({ k: 'Takt (min/unid)', v: isFinite(p.taktMin)? Number(p.taktMin.toFixed(6)) : '' });
     wsP.addRow({ k: 'Takt (s/unid)', v: isFinite(p.taktSec)? Number(p.taktSec.toFixed(3)) : '' });
+    wsP.addRow({ k: 'Ciclo objetivo (s/unid)', v: isFinite(p.cicloObjetivoSec)? Number(p.cicloObjetivoSec.toFixed(3)) : '' });
     wsP.addRow({ k: 'Costo por minuto', v: isFinite(p.costoMin)? Number(p.costoMin.toFixed(6)) : '' });
     wsP.eachRow((row, rowNumber) => {
       if (rowNumber === 1) return;
@@ -2101,9 +2459,9 @@ function goBackDetail() {
       { header: 'Operacion', key: 'operacion', width: 28 },
       { header: 'TE (min)', key: 'stMin', width: 12 },
       { header: 'TE (s)', key: 'stSec', width: 10 },
-      { header: 'Takt (min)', key: 'tMin', width: 12 },
-      { header: 'Takt (s)', key: 'tSec', width: 10 },
-      { header: 'Ratio (TE/Takt)', key: 'ratio', width: 14 },
+      { header: 'Ciclo objetivo (min)', key: 'tMin', width: 18 },
+      { header: 'Ciclo objetivo (s)', key: 'tSec', width: 17 },
+      { header: 'Ratio (TE/Objetivo)', key: 'ratio', width: 18 },
       { header: 'Estatus', key: 'status', width: 12 },
       { header: 'Capacidad (unid/día/op)', key: 'cap', width: 18 },
       { header: 'Operadores req', key: 'ops', width: 14 },
@@ -2138,6 +2496,48 @@ function goBackDetail() {
       });
     });
 
+    if (scenarioModel.items.length) {
+      const wsS = wb.addWorksheet('Escenarios', { views: [{ state: 'frozen', ySplit: 1 }] });
+      wsS.columns = [
+        { header:'Escenario', key:'name', width:28 },
+        { header:'Fecha', key:'date', width:20 },
+        { header:'Rol', key:'role', width:14 },
+        { header:'Estaciones', key:'stations', width:12 },
+        { header:'Elementos', key:'elements', width:11 },
+        { header:'Contenido (s)', key:'content', width:15 },
+        { header:'Ciclo objetivo (s)', key:'target', width:18 },
+        { header:'Carga máxima (s)', key:'maxLoad', width:17 },
+        { header:'Eficiencia (%)', key:'efficiency', width:15 },
+        { header:'Capacidad buena/día', key:'capacity', width:20 },
+        { header:'Costo por unidad', key:'costUnit', width:17 }
+      ];
+      styleHeaderRow(wsS.getRow(1));
+      scenarioModel.items.forEach(item => {
+        const m = item.metrics || calculateScenarioMetrics(item.balanceModel, item.lineSettings);
+        const roles = [];
+        if (item.id === scenarioModel.baselineId) roles.push('Actual');
+        if (item.id === scenarioModel.proposedId) roles.push('Propuesto');
+        wsS.addRow({
+          name:item.name,
+          date:item.createdAt ? new Date(item.createdAt).toLocaleString('es-MX') : '',
+          role:roles.join(' / '),
+          stations:m.stations,
+          elements:m.elements,
+          content:Number(m.workContentSec.toFixed(2)),
+          target:Number(m.targetSec.toFixed(2)),
+          maxLoad:Number(m.maxLoadSec.toFixed(2)),
+          efficiency:Number(m.efficiencyPct.toFixed(2)),
+          capacity:Number(m.capacityGood.toFixed(2)),
+          costUnit:Number(m.costPerGoodUnit.toFixed(4))
+        });
+      });
+      wsS.autoFilter = 'A1:K1';
+      wsS.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return;
+        row.eachCell(cell => { cell.border = thinBorder; cell.alignment = { vertical:'middle', horizontal:'left' }; });
+      });
+    }
+
     // descarga
     const buffer = await wb.xlsx.writeBuffer();
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -2158,7 +2558,8 @@ function goBackDetail() {
   document.addEventListener('change', function(e) {
     const t = e.target;
     const ids = ['habilidad','esfuerzo','condiciones','consistencia','genero','heijunkaInterval'];
-    if (t && (ids.includes(t.id) || t.classList.contains('var') || ['jornadaMin','sueldoSemanal','demandaDiaria','diasSemana'].includes(t.id))) {
+    const lineIds = ['jornadaMin','sueldoSemanal','demandaDiaria','diasSemana','comidaMin','descansosMin','parosPlaneadosMin','eficienciaPlanPct','scrapPct'];
+    if (t && (ids.includes(t.id) || t.classList.contains('var') || lineIds.includes(t.id))) {
       updateResults();
       saveLineLS();
       updateBalanceUI();
@@ -2166,7 +2567,7 @@ function goBackDetail() {
   });
   document.addEventListener('input', function(e){
     const t = e.target;
-    if (t && ['jornadaMin','sueldoSemanal','demandaDiaria','diasSemana'].includes(t.id)) {
+    if (t && ['jornadaMin','sueldoSemanal','demandaDiaria','diasSemana','comidaMin','descansosMin','parosPlaneadosMin','eficienciaPlanPct','scrapPct'].includes(t.id)) {
       saveLineLS();
       updateBalanceUI();
     }
@@ -2201,6 +2602,16 @@ function goBackDetail() {
         applyLineSettingsSnapshot(cloudStudy.lineSettings);
         localStorage.setItem(LS_LINE, JSON.stringify(cloudStudy.lineSettings));
       }
+      if (cloudStudy.balanceModel && Array.isArray(cloudStudy.balanceModel.elements)) {
+        balanceModel = cloudStudy.balanceModel;
+        localStorage.setItem(LS_BALANCE, JSON.stringify(balanceModel));
+        renderBalanceDesigner();
+      }
+      if (cloudStudy.scenarios) {
+        scenarioModel = normalizeScenarioModel(cloudStudy.scenarios);
+        localStorage.setItem(LS_SCENARIOS, JSON.stringify(scenarioModel));
+        renderScenarioUI();
+      }
       renderOpsList();
       updateResults();
       updateBalanceUI();
@@ -2210,13 +2621,936 @@ function goBackDetail() {
     }
   }
 
+  // ==========================
+  // Modelo de balanceo por elementos y estaciones
+  // ==========================
+  const LS_BALANCE = 'leantakt_balanceModel_v1';
+  let balanceModel = { elements: [], stations: [{ id:'station-1', name:'Estacion 1' }] };
+
+  function loadBalanceModel(){
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_BALANCE) || 'null');
+      if (saved && Array.isArray(saved.elements) && Array.isArray(saved.stations)) balanceModel = saved;
+    } catch(error) { console.warn('No se pudo leer el balanceo local', error); }
+    if (!balanceModel.stations.length) balanceModel.stations.push({id:'station-1',name:'Estacion 1'});
+    renderBalanceDesigner();
+  }
+
+  function saveBalanceModel(){
+    if (isDemoMode) {
+      renderBalanceDesigner();
+      updateDashboardMetrics();
+      updateCloudStatus('offline','Modo demo · los cambios no se guardan');
+      return;
+    }
+    localStorage.setItem(LS_BALANCE, JSON.stringify(balanceModel));
+    renderBalanceDesigner();
+    updateDashboardMetrics();
+    queueCloudSync();
+  }
+  const LS_SCENARIOS = 'leantakt_scenarios_v1';
+  let scenarioModel = { items: [], baselineId: null, proposedId: null };
+
+  function scenarioNumber(value, fallback = 0){
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  function calculateScenarioMetrics(model, settings){
+    const stations = Array.isArray(model?.stations) ? model.stations : [];
+    const elements = Array.isArray(model?.elements) ? model.elements : [];
+    const workContentSec = elements.reduce((sum, el) => sum + Math.max(0, scenarioNumber(el.timeSec)), 0);
+    const stationLoads = stations.map(station => elements
+      .filter(el => el.stationId === station.id)
+      .reduce((sum, el) => sum + Math.max(0, scenarioNumber(el.timeSec)), 0));
+    const maxLoadSec = stationLoads.length ? Math.max(...stationLoads) : 0;
+    const stationCount = stations.length;
+    const jornadaMin = Math.max(0, scenarioNumber(settings?.jornadaMin));
+    const netMin = Math.max(0, jornadaMin - Math.max(0, scenarioNumber(settings?.comidaMin))
+      - Math.max(0, scenarioNumber(settings?.descansosMin)) - Math.max(0, scenarioNumber(settings?.parosPlaneadosMin)));
+    const efficiencyPlan = Math.min(100, Math.max(1, scenarioNumber(settings?.eficienciaPlanPct, 100))) / 100;
+    const scrapRate = Math.min(99, Math.max(0, scenarioNumber(settings?.scrapPct))) / 100;
+    const demand = Math.max(0, scenarioNumber(settings?.demandaDiaria));
+    const grossDemand = demand > 0 ? demand / (1 - scrapRate) : 0;
+    const effectiveMin = netMin * efficiencyPlan;
+    const targetSec = grossDemand > 0 ? effectiveMin * 60 / grossDemand : 0;
+    const efficiencyPct = stationCount > 0 && targetSec > 0 ? workContentSec / (stationCount * targetSec) * 100 : 0;
+    const capacityGood = maxLoadSec > 0 ? effectiveMin * 60 / maxLoadSec * (1 - scrapRate) : 0;
+    const days = Math.max(1, scenarioNumber(settings?.diasSemana, 6));
+    const salary = Math.max(0, scenarioNumber(settings?.sueldoSemanal));
+    const costMin = jornadaMin > 0 ? salary / (jornadaMin * days) : 0;
+    const dailyCost = stationCount * jornadaMin * costMin;
+    return {
+      stations: stationCount,
+      operators: stationCount,
+      elements: elements.length,
+      workContentSec,
+      targetSec,
+      maxLoadSec,
+      efficiencyPct,
+      capacityGood,
+      dailyCost,
+      costPerGoodUnit: demand > 0 ? dailyCost / demand : 0
+    };
+  }
+
+  function normalizeScenarioModel(value){
+    const items = Array.isArray(value?.items) ? value.items.filter(item => item && item.id && item.balanceModel) : [];
+    return {
+      items,
+      baselineId: items.some(item => item.id === value?.baselineId) ? value.baselineId : (items[0]?.id || null),
+      proposedId: items.some(item => item.id === value?.proposedId) ? value.proposedId : (items[1]?.id || items[0]?.id || null)
+    };
+  }
+
+  function loadScenarioModel(){
+    try {
+      scenarioModel = normalizeScenarioModel(JSON.parse(localStorage.getItem(LS_SCENARIOS) || 'null'));
+    } catch(error) {
+      console.warn('No se pudieron leer los escenarios locales', error);
+      scenarioModel = normalizeScenarioModel(null);
+    }
+    renderScenarioUI();
+  }
+
+  function saveScenarioModel(sync = true){
+    if (isDemoMode) {
+      renderScenarioUI();
+      updateCloudStatus('offline','Modo demo · los cambios no se guardan');
+      return;
+    }
+    localStorage.setItem(LS_SCENARIOS, JSON.stringify(scenarioModel));
+    renderScenarioUI();
+    if (sync) queueCloudSync();
+  }
+
+  function captureScenario(){
+    const input = document.getElementById('scenarioName');
+    const fallback = `Escenario ${scenarioModel.items.length + 1}`;
+    const name = (input?.value || '').trim() || fallback;
+    const lineSettings = JSON.parse(JSON.stringify(getLineSettingsSnapshot()));
+    const model = JSON.parse(JSON.stringify(balanceModel));
+    const scenario = {
+      id: `scenario-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      name,
+      createdAt: new Date().toISOString(),
+      lineSettings,
+      balanceModel: model,
+      metrics: calculateScenarioMetrics(model, lineSettings)
+    };
+    scenarioModel.items.push(scenario);
+    if (!scenarioModel.baselineId) scenarioModel.baselineId = scenario.id;
+    else if (!scenarioModel.proposedId || scenarioModel.proposedId === scenarioModel.baselineId) scenarioModel.proposedId = scenario.id;
+    if (input) input.value = '';
+    saveScenarioModel();
+  }
+
+  function deleteScenario(id){
+    const scenario = scenarioModel.items.find(item => item.id === id);
+    if (!scenario || !confirm(`¿Eliminar el escenario "${scenario.name}"?`)) return;
+    scenarioModel.items = scenarioModel.items.filter(item => item.id !== id);
+    scenarioModel = normalizeScenarioModel(scenarioModel);
+    saveScenarioModel();
+  }
+
+  function restoreScenario(id){
+    const scenario = scenarioModel.items.find(item => item.id === id);
+    if (!scenario || !confirm(`¿Restaurar "${scenario.name}" como configuración de trabajo?`)) return;
+    applyLineSettingsSnapshot(scenario.lineSettings || {});
+    balanceModel = JSON.parse(JSON.stringify(scenario.balanceModel));
+    if (!Array.isArray(balanceModel.stations) || !balanceModel.stations.length) {
+      balanceModel.stations = [{ id:'station-1', name:'Estación 1' }];
+    }
+    if (!isDemoMode) {
+      localStorage.setItem(LS_LINE, JSON.stringify(getLineSettingsSnapshot()));
+      localStorage.setItem(LS_BALANCE, JSON.stringify(balanceModel));
+    }
+    renderBalanceDesigner();
+    updateResults();
+    updateBalanceUI();
+    renderScenarioUI();
+    queueCloudSync();
+  }
+
+  function selectScenarioForComparison(role, id){
+    if (!scenarioModel.items.some(item => item.id === id)) return;
+    if (role === 'baseline') scenarioModel.baselineId = id;
+    if (role === 'proposed') scenarioModel.proposedId = id;
+    saveScenarioModel();
+  }
+
+  function scenarioMetricText(metric, value){
+    if (metric === 'stations' || metric === 'operators') return String(Math.round(value || 0));
+    if (metric === 'efficiencyPct') return `${scenarioNumber(value).toFixed(1)}%`;
+    if (metric === 'capacityGood') return `${scenarioNumber(value).toFixed(1)} unid/día`;
+    if (metric === 'costPerGoodUnit') return `$${scenarioNumber(value).toFixed(2)}`;
+    return `${scenarioNumber(value).toFixed(1)} s`;
+  }
+
+  function renderScenarioUI(){
+    const list = document.getElementById('scenarioList');
+    const baselineSelect = document.getElementById('scenarioBaselineSelect');
+    const proposedSelect = document.getElementById('scenarioProposedSelect');
+    const comparison = document.getElementById('scenarioComparison');
+    if (!list || !baselineSelect || !proposedSelect || !comparison) return;
+    if (!scenarioModel.items.length) {
+      list.innerHTML = '<div class="scenario-empty">Aún no hay escenarios. Configura la línea y guarda la primera fotografía.</div>';
+      baselineSelect.innerHTML = '<option>Sin escenarios</option>';
+      proposedSelect.innerHTML = '<option>Sin escenarios</option>';
+      comparison.innerHTML = '<div class="scenario-empty">Guarda al menos dos alternativas para compararlas.</div>';
+      return;
+    }
+    list.innerHTML = scenarioModel.items.map(item => {
+      const metrics = item.metrics || calculateScenarioMetrics(item.balanceModel, item.lineSettings);
+      const selected = item.id === scenarioModel.baselineId || item.id === scenarioModel.proposedId;
+      const date = item.createdAt ? new Date(item.createdAt).toLocaleString('es-MX') : '';
+      return `<article class="scenario-card ${selected ? 'selected' : ''}">
+        <div class="scenario-card-head"><div><h3>${escapeHtml(item.name)}</h3><small>${escapeHtml(date)}</small></div><small>${metrics.elements} elem.</small></div>
+        <div class="scenario-metrics">
+          <div class="scenario-metric"><span>Estaciones</span><b>${metrics.stations}</b></div>
+          <div class="scenario-metric"><span>Eficiencia</span><b>${scenarioMetricText('efficiencyPct', metrics.efficiencyPct)}</b></div>
+          <div class="scenario-metric"><span>Capacidad buena</span><b>${scenarioMetricText('capacityGood', metrics.capacityGood)}</b></div>
+          <div class="scenario-metric"><span>Costo/unidad</span><b>${scenarioMetricText('costPerGoodUnit', metrics.costPerGoodUnit)}</b></div>
+        </div>
+        <div class="scenario-card-actions">
+          <button onclick="selectScenarioForComparison('baseline','${item.id}')">Actual</button>
+          <button onclick="selectScenarioForComparison('proposed','${item.id}')">Propuesto</button>
+          <button onclick="restoreScenario('${item.id}')">Restaurar</button>
+          <button onclick="deleteScenario('${item.id}')">Eliminar</button>
+        </div>
+      </article>`;
+    }).join('');
+    const options = scenarioModel.items.map(item => `<option value="${item.id}">${escapeHtml(item.name)}</option>`).join('');
+    baselineSelect.innerHTML = options;
+    proposedSelect.innerHTML = options;
+    baselineSelect.value = scenarioModel.baselineId || '';
+    proposedSelect.value = scenarioModel.proposedId || '';
+    renderScenarioComparison();
+  }
+
+  function renderScenarioComparison(){
+    const container = document.getElementById('scenarioComparison');
+    if (!container) return;
+    const baseline = scenarioModel.items.find(item => item.id === scenarioModel.baselineId);
+    const proposed = scenarioModel.items.find(item => item.id === scenarioModel.proposedId);
+    if (!baseline || !proposed || baseline.id === proposed.id) {
+      container.innerHTML = '<div class="scenario-empty">Selecciona dos escenarios distintos para ver el impacto.</div>';
+      return;
+    }
+    const a = baseline.metrics || calculateScenarioMetrics(baseline.balanceModel, baseline.lineSettings);
+    const b = proposed.metrics || calculateScenarioMetrics(proposed.balanceModel, proposed.lineSettings);
+    const rows = [
+      ['stations','Estaciones',false],
+      ['efficiencyPct','Eficiencia de balance',true],
+      ['capacityGood','Capacidad buena',true],
+      ['costPerGoodUnit','Costo por unidad',false],
+      ['maxLoadSec','Carga máxima',false]
+    ];
+    container.innerHTML = `<table class="comparison-table"><thead><tr><th>Indicador</th><th>${escapeHtml(baseline.name)}</th><th>${escapeHtml(proposed.name)}</th><th>Cambio</th></tr></thead><tbody>${rows.map(([key,label,higherIsBetter]) => {
+      const delta = scenarioNumber(b[key]) - scenarioNumber(a[key]);
+      const good = Math.abs(delta) < 0.0001 ? null : (higherIsBetter ? delta > 0 : delta < 0);
+      const css = good === null ? 'delta-neutral' : (good ? 'delta-good' : 'delta-bad');
+      const sign = delta > 0 ? '+' : '';
+      return `<tr><td>${label}</td><td>${scenarioMetricText(key,a[key])}</td><td>${scenarioMetricText(key,b[key])}</td><td class="${css}">${sign}${scenarioMetricText(key,delta)}</td></tr>`;
+    }).join('')}</tbody></table>`;
+  }
+
+
+  function addBalanceStation(){
+    const number = balanceModel.stations.length + 1;
+    balanceModel.stations.push({ id:`station-${Date.now()}`, name:`Estacion ${number}` });
+    saveBalanceModel();
+  }
+
+  function deleteBalanceStation(stationId){
+    if (balanceModel.stations.length <= 1) return;
+    const fallback = balanceModel.stations.find(s => s.id !== stationId)?.id;
+    balanceModel.elements.forEach(el => { if (el.stationId === stationId) el.stationId = fallback; });
+    balanceModel.stations = balanceModel.stations.filter(s => s.id !== stationId);
+    saveBalanceModel();
+  }
+
+  function addBalanceElement(){
+    const name = (document.getElementById('balanceElementName')?.value || '').trim();
+    const timeSec = Number(document.getElementById('balanceElementTime')?.value);
+    if (!name || !isFinite(timeSec) || timeSec <= 0) { alert('Captura un elemento y un tiempo valido.'); return; }
+    balanceModel.elements.push({
+      id:`element-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      name, timeSec,
+      type:document.getElementById('balanceElementType').value,
+      predecessors:document.getElementById('balancePredecessor').value ? [document.getElementById('balancePredecessor').value] : [],
+      stationId:document.getElementById('balanceStation').value || balanceModel.stations[0].id
+    });
+    document.getElementById('balanceElementName').value = '';
+    document.getElementById('balanceElementTime').value = '';
+    saveBalanceModel();
+  }
+
+  function deleteBalanceElement(id){
+    balanceModel.elements = balanceModel.elements.filter(el => el.id !== id);
+    balanceModel.elements.forEach(el => { el.predecessors = (el.predecessors || []).filter(p => p !== id); });
+    saveBalanceModel();
+  }
+
+  function assignBalanceElement(id, stationId){
+    const element = balanceModel.elements.find(el => el.id === id);
+    if (element) { element.stationId = stationId; saveBalanceModel(); }
+  }
+
+  function updateBalanceElement(id, field, value){
+    const element = balanceModel.elements.find(el => el.id === id);
+    if (!element) return;
+    if (field === 'timeSec') {
+      const number = Number(value);
+      if (!isFinite(number) || number <= 0) { renderBalanceDesigner(); return; }
+      element.timeSec = number;
+    } else if (field === 'predecessor') {
+      element.predecessors = value ? [value] : [];
+    } else if (field === 'name') {
+      const name = String(value || '').trim();
+      if (!name) { renderBalanceDesigner(); return; }
+      element.name = name;
+    } else if (field === 'type') {
+      element.type = value;
+    }
+    saveBalanceModel();
+  }
+
+  function beginBalanceDrag(event, elementId){
+    event.dataTransfer.setData('text/plain', elementId);
+    event.dataTransfer.effectAllowed = 'move';
+  }
+
+  function allowBalanceDrop(event){
+    event.preventDefault();
+    event.currentTarget.classList.add('drag-over');
+  }
+
+  function leaveBalanceDrop(event){
+    event.currentTarget.classList.remove('drag-over');
+  }
+
+  function dropBalanceElement(event, stationId){
+    event.preventDefault();
+    event.currentTarget.classList.remove('drag-over');
+    const elementId = event.dataTransfer.getData('text/plain');
+    assignBalanceElement(elementId, stationId);
+  }
+
+  function generateAutomaticBalance(){
+    const taktSec = getLineParams().cicloObjetivoSec;
+    if (!isFinite(taktSec) || taktSec <= 0) { alert('Completa jornada, pérdidas, eficiencia, scrap y demanda.'); return; }
+    if (!balanceModel.elements.length) { alert('Agrega o importa elementos antes de balancear.'); return; }
+
+    const elements = balanceModel.elements;
+    const byId = Object.fromEntries(elements.map(el => [el.id,el]));
+    const successors = Object.fromEntries(elements.map(el => [el.id,[]]));
+    elements.forEach(el => (el.predecessors || []).forEach(pred => { if (successors[pred]) successors[pred].push(el.id); }));
+    const weightMemo = {};
+    const visiting = new Set();
+    function positionalWeight(id){
+      if (weightMemo[id] != null) return weightMemo[id];
+      if (visiting.has(id)) throw new Error('cycle');
+      visiting.add(id);
+      const weight = Number(byId[id]?.timeSec || 0) + (successors[id] || []).reduce((sum,next) => sum + positionalWeight(next),0);
+      visiting.delete(id);
+      return (weightMemo[id] = weight);
+    }
+    try { elements.forEach(el => positionalWeight(el.id)); }
+    catch { alert('Existe un ciclo en las precedencias. Corrigelo antes de generar la propuesta.'); return; }
+
+    const pending = new Set(elements.map(el => el.id));
+    const assigned = new Set();
+    const proposed = [];
+    while (pending.size) {
+      const station = { id:`auto-${proposed.length+1}-${Date.now()}`, name:`Estacion ${proposed.length+1}`, load:0, elements:[] };
+      let progressed = true;
+      while (progressed) {
+        progressed = false;
+        const eligible = [...pending].map(id => byId[id]).filter(el => (el.predecessors || []).every(pred => assigned.has(pred) || station.elements.includes(pred))).sort((a,b) => weightMemo[b.id]-weightMemo[a.id]);
+        const next = eligible.find(el => station.load + Number(el.timeSec) <= taktSec) || (station.elements.length===0 ? eligible[0] : null);
+        if (next) {
+          station.elements.push(next.id);
+          station.load += Number(next.timeSec);
+          pending.delete(next.id);
+          progressed = true;
+        }
+      }
+      if (!station.elements.length) { alert('No se pudo resolver el orden de precedencias.'); return; }
+      station.elements.forEach(id => assigned.add(id));
+      proposed.push(station);
+    }
+    balanceModel.stations = proposed.map(({id,name}) => ({id,name}));
+    proposed.forEach(station => station.elements.forEach(id => { byId[id].stationId = station.id; }));
+    saveBalanceModel();
+  }
+
+  function importOperationsToBalance(){
+    let added = 0;
+    savedOps.forEach(op => {
+      if (balanceModel.elements.some(el => el.sourceOpId === op.id)) return;
+      balanceModel.elements.push({
+        id:`element-op-${op.id}-${Date.now()}`,
+        sourceOpId:op.id,
+        name:op.operacion,
+        timeSec:Number(op.summary?.estandar) || 0,
+        type:'va', predecessors:[], stationId:balanceModel.stations[0].id
+      });
+      added++;
+    });
+    if (!added) { alert('No hay operaciones nuevas para importar.'); return; }
+    saveBalanceModel();
+  }
+
+  function getPrecedenceViolations(){
+    const stationIndex = Object.fromEntries(balanceModel.stations.map((s,i) => [s.id,i]));
+    const elementIndex = Object.fromEntries(balanceModel.elements.map(el => [el.id,el]));
+    const violations = new Set();
+    balanceModel.elements.forEach(el => {
+      (el.predecessors || []).forEach(predId => {
+        const pred = elementIndex[predId];
+        if (pred && stationIndex[pred.stationId] > stationIndex[el.stationId]) violations.add(el.id);
+      });
+    });
+    return violations;
+  }
+
+  function renderBalanceDesigner(){
+    const body = document.getElementById('balanceElementsBody');
+    if (!body) return;
+    const predecessor = document.getElementById('balancePredecessor');
+    const stationSelect = document.getElementById('balanceStation');
+    predecessor.innerHTML = '<option value="">Sin predecesor</option>' + balanceModel.elements.map(el => `<option value="${el.id}">${escapeHtml(el.name)}</option>`).join('');
+    stationSelect.innerHTML = balanceModel.stations.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+    const stationOptions = selected => balanceModel.stations.map(s => `<option value="${s.id}" ${s.id===selected?'selected':''}>${escapeHtml(s.name)}</option>`).join('');
+    const typeOptions = selected => [['va','VA'],['nva','NVA'],['walk','Caminata'],['machine','Maquina']].map(([value,label]) => `<option value="${value}" ${value===selected?'selected':''}>${label}</option>`).join('');
+    const predecessorOptions = element => '<option value="">Sin predecesor</option>' + balanceModel.elements.filter(other => other.id !== element.id).map(other => `<option value="${other.id}" ${(element.predecessors||[]).includes(other.id)?'selected':''}>${escapeHtml(other.name)}</option>`).join('');
+    const violations = getPrecedenceViolations();
+    const byId = Object.fromEntries(balanceModel.elements.map(el => [el.id,el]));
+
+    body.innerHTML = balanceModel.elements.length ? balanceModel.elements.map(el => `
+      <tr>
+        <td><input value="${escapeHtml(el.name)}" onchange="updateBalanceElement('${el.id}','name',this.value)" />${violations.has(el.id)?'<div class="precedence-error">Precedencia invalida</div>':''}</td>
+        <td><input type="number" min="0.01" step="0.01" value="${Number(el.timeSec)}" onchange="updateBalanceElement('${el.id}','timeSec',this.value)" style="min-width:95px" /></td>
+        <td><select onchange="updateBalanceElement('${el.id}','type',this.value)">${typeOptions(el.type)}</select></td>
+        <td><select onchange="updateBalanceElement('${el.id}','predecessor',this.value)">${predecessorOptions(el)}</select></td>
+        <td><select onchange="assignBalanceElement('${el.id}',this.value)">${stationOptions(el.stationId)}</select></td>
+        <td><button class="miniBtn deleteBtn" onclick="deleteBalanceElement('${el.id}')">Eliminar</button></td>
+      </tr>`).join('') : '<tr><td colspan="6">Sin elementos de trabajo</td></tr>';
+
+    renderStationYamazumi(violations);
+    updateFormalBalanceMetrics();
+  }
+
+  function renderStationYamazumi(violations){
+    const grid = document.getElementById('stationGrid');
+    if (!grid) return;
+    const taktSec = getLineParams().cicloObjetivoSec;
+    grid.innerHTML = balanceModel.stations.map(station => {
+      const elements = balanceModel.elements.filter(el => el.stationId === station.id);
+      const load = elements.reduce((sum,el) => sum + Number(el.timeSec || 0),0);
+      const utilization = isFinite(taktSec) && taktSec > 0 ? load/taktSec : 0;
+      const segments = elements.map(el => {
+        const height = isFinite(taktSec) && taktSec > 0 ? Math.max(10, Math.min(100, el.timeSec/taktSec*100)) : Math.max(10,100/Math.max(elements.length,1));
+        return `<div class="station-segment segment-${el.type}" draggable="true" ondragstart="beginBalanceDrag(event,'${el.id}')" style="height:${height}%" title="${escapeHtml(el.name)}: ${fmtNum(el.timeSec,2)} s">${escapeHtml(shorten(el.name,16))}</div>`;
+      }).join('');
+      return `<div class="station-card" ondragover="allowBalanceDrop(event)" ondragleave="leaveBalanceDrop(event)" ondrop="dropBalanceElement(event,'${station.id}')">
+        <div class="station-head"><b>${escapeHtml(station.name)}</b><span class="station-load" style="color:${utilization>1?'#ff8a84':'var(--muted)'}">${fmtNum(load,1)} s · ${isFinite(taktSec)?fmtNum(utilization*100,1)+'%':'sin Takt'}</span></div>
+        <div class="station-bar">${segments}</div>
+        <div class="station-tasks">${elements.map(el=>`<div class="station-task" draggable="true" ondragstart="beginBalanceDrag(event,'${el.id}')"><span>${escapeHtml(el.name)}</span><b>${fmtNum(el.timeSec,1)} s</b></div>`).join('') || '<div class="hint">Estacion vacia</div>'}</div>
+        ${elements.some(el=>violations.has(el.id))?'<div class="precedence-error">Revisa el orden de precedencias</div>':''}
+        ${balanceModel.stations.length>1?`<button class="miniBtn deleteBtn mt10" onclick="deleteBalanceStation('${station.id}')">Quitar estacion</button>`:''}
+      </div>`;
+    }).join('');
+  }
+
+  function updateFormalBalanceMetrics(){
+    const taktSec = getLineParams().cicloObjetivoSec;
+    const total = balanceModel.elements.reduce((sum,el) => sum + Number(el.timeSec || 0),0);
+    const actual = balanceModel.stations.length;
+    const minimum = isFinite(taktSec) && taktSec > 0 ? Math.ceil(total/taktSec) : NaN;
+    const efficiency = isFinite(taktSec) && taktSec > 0 && actual > 0 ? total/(actual*taktSec) : NaN;
+    document.getElementById('balanceTotalWork').textContent = total ? `${fmtNum(total,1)} s` : '—';
+    document.getElementById('balanceMinStations').textContent = isFinite(minimum) ? minimum : '—';
+    document.getElementById('balanceUsedStations').textContent = actual;
+    document.getElementById('balanceEfficiency').textContent = isFinite(efficiency) ? `${fmtNum(efficiency*100,1)}%` : '—';
+    document.getElementById('balanceDelay').textContent = isFinite(efficiency) ? `${fmtNum(Math.max(0,1-efficiency)*100,1)}%` : '—';
+  }
+
+  // ==========================
+  // Navegacion principal / sidebar
+  // ==========================
+  function initAppShell(){
+    const app = document.getElementById('cronometroApp');
+    if (!app || document.getElementById('appShell')) return;
+
+    const legacyNodes = Array.from(app.childNodes);
+    const shell = document.createElement('div');
+    shell.id = 'appShell';
+    shell.className = 'app-shell';
+    shell.innerHTML = `
+      <aside class="app-sidebar" aria-label="Navegacion principal">
+        <div class="brand-lockup">
+          <div class="brand-mark">LT</div>
+          <div><div class="brand-name">LeanTakt</div><div class="brand-caption">Ingenieria de linea</div></div>
+        </div>
+        <div class="sidebar-label">ESPACIO DE TRABAJO</div>
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-view="dashboardView"><span class="nav-icon">&#8962;</span><span>Resumen</span></button>
+          <button class="nav-item" data-view="timeStudyView"><span class="nav-icon">&#9719;</span><span>Tiempos</span></button>
+          <button class="nav-item" data-view="balanceView"><span class="nav-icon">&#9638;</span><span>Balanceo</span></button>
+          <button class="nav-item" data-view="scenariosView"><span class="nav-icon">&#9671;</span><span>Escenarios</span></button>
+          <button class="nav-item" data-view="reportsView"><span class="nav-icon">&#9636;</span><span>Reportes</span></button>
+          <button id="sidebarAdminBtn" class="nav-item nav-admin" type="button"><span class="nav-icon">&#9881;</span><span>Administracion</span></button>
+        </nav>
+        <div class="sidebar-footer">
+          <div id="sidebarUser" class="sidebar-user">Sesion activa</div>
+          <button class="logout-btn" type="button" onclick="logout()">Cerrar sesion</button>
+        </div>
+      </aside>
+      <main class="app-main">
+        <header class="app-topbar">
+          <div><h1 id="appPageTitle" class="page-title">Resumen de linea</h1><div id="appPageSubtitle" class="page-subtitle">Indicadores principales del estudio activo</div></div>
+          <div class="topbar-meta">
+            <div id="appSaveStatus" class="save-state" data-state="syncing" role="status"><i class="save-state-dot"></i><span id="appSaveStatusText">Iniciando...</span></div>
+            <span class="chip">LeanTakt ${APP_VERSION}</span>
+          </div>
+        </header>
+        <section id="dashboardView" class="app-view active">
+          <div class="module-intro"><h2>Centro de control</h2><p>Consulta el estado del estudio y entra al modulo que necesites desde la navegacion lateral.</p></div>
+          <div class="dashboard-grid">
+            <div class="metric-card"><div class="metric-label">Operaciones</div><div id="dashOps" class="metric-value">0</div><div class="metric-help">Elementos cronometrados</div></div>
+            <div class="metric-card"><div class="metric-label">Ciclo planeado</div><div id="dashTakt" class="metric-value">—</div><div class="metric-help">Con eficiencia y scrap</div></div>
+            <div class="metric-card"><div class="metric-label">Contenido de trabajo</div><div id="dashWork" class="metric-value">—</div><div class="metric-help">Suma de tiempos estandar</div></div>
+            <div class="metric-card"><div class="metric-label">Estaciones planeadas</div><div id="dashStations" class="metric-value">—</div><div class="metric-help">Mínimo con ciclo planeado</div></div>
+          </div>
+          <div class="coming-grid">
+            <div class="coming-card"><h3>Toma de tiempos</h3><p>Captura ciclos, califica el ritmo y calcula tiempos normales y estandar.</p></div>
+            <div class="coming-card"><h3>Balanceo de linea</h3><p>Revisa capacidad, cuellos de botella, Yamazumi y dotacion requerida.</p></div>
+          </div>
+        </section>
+        <section id="timeStudyView" class="app-view">
+          <div class="study-toolbar" aria-label="Acciones del estudio">
+            <div class="study-search">
+              <input id="buscarFolio" aria-label="Buscar estudio por folio" placeholder="Buscar folio LT-..." onkeydown="if(event.key==='Enter') buscarPorFolioInput()" />
+              <button class="tool-button" type="button" onclick="buscarPorFolioInput()" title="Buscar estudio"><span class="tool-icon">&#128269;</span><span>Buscar</span></button>
+            </div>
+            <button class="tool-button" type="button" onclick="clearAllOperations()" title="Crear un estudio nuevo"><span class="tool-icon">&#43;</span><span>Nuevo</span></button>
+            <button class="tool-button" type="button" onclick="abrirModalEstudios()" title="Abrir estudios guardados"><span class="tool-icon">&#128194;</span><span>Abrir</span></button>
+            <button class="tool-button" type="button" onclick="saveStudyAs()" title="Guardar una copia como estudio nuevo"><span class="tool-icon">&#128190;</span><span>Guardar como</span></button>
+            <button class="tool-button" type="button" onclick="syncCloudNow(true)" title="Guardar cambios del estudio actual"><span class="tool-icon">&#10003;</span><span>Guardar cambios</span></button>
+            <select class="tool-select" aria-label="Exportar estudio" onchange="if(this.value==='xlsx') exportXLSX_ExcelJS(); if(this.value==='csv') exportCSV(); this.value=''">
+              <option value="" selected>Exportar...</option>
+              <option value="xlsx">Excel (.xlsx)</option>
+              <option value="csv">Datos (.csv)</option>
+            </select>
+          </div>
+        </section>
+        <section id="balanceView" class="app-view">
+          <div class="module-intro"><h2>Balanceo de línea</h2><p>Construye estaciones, asigna elementos, valida precedencias y compara cada carga contra el ciclo objetivo planeado.</p></div>
+          <div class="card">
+            <div style="font-weight:800;margin-bottom:10px;">Elementos de trabajo y precedencias</div>
+            <div class="balance-form">
+              <input id="balanceElementName" placeholder="Elemento de trabajo" />
+              <input id="balanceElementTime" type="number" min="0.01" step="0.01" placeholder="Tiempo (s)" />
+              <select id="balanceElementType"><option value="va">VA</option><option value="nva">NVA necesario</option><option value="walk">Caminata</option><option value="machine">Maquina</option></select>
+              <select id="balancePredecessor"><option value="">Sin predecesor</option></select>
+              <select id="balanceStation"></select>
+              <button class="btn save" type="button" onclick="addBalanceElement()">Agregar</button>
+            </div>
+            <div class="balance-actions">
+              <button type="button" onclick="addBalanceStation()">+ Estacion</button>
+              <button type="button" onclick="importOperationsToBalance()">Importar operaciones medidas</button>
+              <button type="button" onclick="generateAutomaticBalance()">Generar propuesta automatica</button>
+            </div>
+            <div class="balance-kpis">
+              <div class="balance-kpi"><small>Contenido total</small><b id="balanceTotalWork">—</b></div>
+              <div class="balance-kpi"><small>Estaciones minimas</small><b id="balanceMinStations">—</b></div>
+              <div class="balance-kpi"><small>Estaciones usadas</small><b id="balanceUsedStations">—</b></div>
+              <div class="balance-kpi"><small>Eficiencia</small><b id="balanceEfficiency">—</b></div>
+              <div class="balance-kpi"><small>Perdida de balance</small><b id="balanceDelay">—</b></div>
+            </div>
+            <div style="overflow:auto;">
+              <table class="table">
+                <thead><tr><th>Elemento</th><th>Tiempo</th><th>Tipo</th><th>Predecesor</th><th>Estacion</th><th></th></tr></thead>
+                <tbody id="balanceElementsBody"><tr><td colspan="6">Sin elementos</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="opsCard glass mt10">
+            <div style="font-weight:800;">Yamazumi por estaciones</div>
+            <div class="hint mt10">Cada columna apila los elementos asignados. La altura completa representa el Takt.</div>
+            <div id="stationGrid" class="station-grid"></div>
+          </div>
+        </section>
+        <section id="scenariosView" class="app-view">
+          <div class="module-intro"><h2>Escenarios</h2><p>Guarda fotografías completas de la línea y compara el estado actual contra una propuesta de balanceo.</p></div>
+          <div class="card">
+            <div class="scenario-toolbar">
+              <input id="scenarioName" type="text" maxlength="60" placeholder="Nombre del escenario (ej. Línea actual)">
+              <button class="btn save" onclick="captureScenario()">Guardar escenario actual</button>
+            </div>
+            <div class="hint">Cada escenario conserva parámetros de jornada y demanda, estaciones, elementos, precedencias y asignaciones.</div>
+            <div id="scenarioList" class="scenario-list"></div>
+          </div>
+          <div class="opsCard glass mt10">
+            <div style="font-weight:800;">Comparación actual vs. propuesto</div>
+            <div class="scenario-compare-controls">
+              <select id="scenarioBaselineSelect" onchange="selectScenarioForComparison('baseline', this.value)"></select>
+              <span style="text-align:center;color:var(--muted);">vs.</span>
+              <select id="scenarioProposedSelect" onchange="selectScenarioForComparison('proposed', this.value)"></select>
+            </div>
+            <div id="scenarioComparison" class="tableWrap"></div>
+          </div>
+        </section>
+        <section id="reportsView" class="app-view">
+          <div class="module-intro"><h2>Reporte ejecutivo</h2><p>Consolida tiempos, capacidad, balanceo, escenarios y recomendaciones del estudio activo.</p></div>
+          <div class="report-actions">
+            <button type="button" onclick="printExecutiveReport()">Imprimir / Guardar PDF</button>
+            <button type="button" onclick="exportXLSX_ExcelJS()">Exportar Excel</button>
+            <button type="button" onclick="exportCSV()">Exportar CSV</button>
+          </div>
+          <div id="executiveReport">
+            <div class="report-header">
+              <div><h2 id="reportStudyName">Estudio LeanTakt</h2><div id="reportStatusText" class="hint">Diagnóstico pendiente</div></div>
+              <div class="report-meta"><div id="reportFolio">Folio: —</div><div id="reportGeneratedAt">Actualizado: —</div><div>LeanTakt ${APP_VERSION}</div></div>
+            </div>
+            <div id="reportKpis" class="report-kpis"></div>
+            <div class="report-grid">
+              <div class="report-panel"><h3>Diagnóstico y recomendaciones</h3><div id="reportDiagnosis" class="report-diagnosis"></div></div>
+              <div class="report-panel"><h3>Carga por estación</h3><div id="reportStations" class="report-stations"></div></div>
+              <div class="report-panel"><h3>Actual vs. propuesto</h3><div id="reportScenarioSummary"></div></div>
+              <div class="report-panel"><h3>Contenido del estudio</h3><div id="reportStudyContent"></div></div>
+            </div>
+          </div>
+        </section>
+      </main>`;
+
+    app.appendChild(shell);
+    const timeView = document.getElementById('timeStudyView');
+    legacyNodes.forEach(node => timeView.appendChild(node));
+    const legacyHeader = legacyNodes.find(node => node.nodeType === 1 && node.matches('div'));
+    if (legacyHeader) legacyHeader.style.display = 'none';
+    const legacyTitle = timeView.querySelector(':scope > h1');
+    const legacySubtitle = timeView.querySelector(':scope > .subtle');
+    if (legacyTitle) legacyTitle.style.display = 'none';
+    if (legacySubtitle) legacySubtitle.style.display = 'none';
+
+    const balanceCard = document.getElementById('balanceWrap')?.closest('.opsCard');
+    if (balanceCard) document.getElementById('balanceView').appendChild(balanceCard);
+
+    document.querySelectorAll('.nav-item[data-view]').forEach(button => {
+      button.addEventListener('click', () => switchAppView(button.dataset.view, button));
+    });
+    document.getElementById('sidebarAdminBtn')?.addEventListener('click', openAdminModal);
+  }
+
+  function switchAppView(viewId, button){
+    document.querySelectorAll('.app-view').forEach(view => view.classList.toggle('active', view.id === viewId));
+    document.querySelectorAll('.nav-item[data-view]').forEach(item => item.classList.toggle('active', item === button));
+    const labels = {
+      dashboardView:['Resumen de linea','Indicadores principales del estudio activo'],
+      timeStudyView:['Toma de tiempos','Captura y estandarizacion de operaciones'],
+      balanceView:['Balanceo de linea','Capacidad, dotacion y distribucion del trabajo'],
+      scenariosView:['Escenarios','Compara alternativas de balanceo'],
+      reportsView:['Reportes','Resultados y exportaciones del estudio']
+    };
+    const label = labels[viewId] || labels.dashboardView;
+    document.getElementById('appPageTitle').textContent = label[0];
+    document.getElementById('appPageSubtitle').textContent = label[1];
+    if (viewId === 'balanceView') requestAnimationFrame(updateBalanceUI);
+    if (viewId === 'reportsView') requestAnimationFrame(renderExecutiveReport);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function updateDashboardMetrics(){
+    if (!document.getElementById('dashOps')) return;
+    const params = getLineParams();
+    const ops = getOpsForAnalysis();
+    const workSec = balanceModel.elements.length ? balanceModel.elements.reduce((sum,el) => sum + (Number(el.timeSec) || 0), 0) : ops.reduce((sum,op) => sum + (Number(op.summary?.estandar) || 0), 0);
+    const stations = isFinite(params.cicloObjetivoSec) && params.cicloObjetivoSec > 0 ? Math.ceil(workSec / params.cicloObjetivoSec) : NaN;
+    document.getElementById('dashOps').textContent = ops.length;
+    document.getElementById('dashTakt').textContent = isFinite(params.cicloObjetivoSec) ? `${fmtNum(params.cicloObjetivoSec,1)} s` : '—';
+    document.getElementById('dashWork').textContent = workSec > 0 ? `${fmtNum(workSec,1)} s` : '—';
+    document.getElementById('dashStations').textContent = isFinite(stations) ? stations : '—';
+  }
+
+  function getExecutiveReportData(){
+    const params = getLineParams();
+    const settings = getLineSettingsSnapshot();
+    const ops = getOpsForAnalysis();
+    const hasFormalElements = balanceModel.elements.length > 0;
+    const reportModel = hasFormalElements ? balanceModel : {
+      stations: balanceModel.stations.length ? balanceModel.stations : [{id:'station-1',name:'Estación 1'}],
+      elements: ops.map((op,index) => ({
+        id:`report-op-${index}`,
+        name:op.operacion,
+        timeSec:Number(op.summary?.estandar) || 0,
+        stationId:(balanceModel.stations[0]?.id || 'station-1')
+      }))
+    };
+    const metrics = calculateScenarioMetrics(reportModel, settings);
+    const targetSec = metrics.targetSec;
+    const loads = reportModel.stations.map(station => ({
+      id:station.id,
+      name:station.name,
+      loadSec:reportModel.elements.filter(el => el.stationId === station.id)
+        .reduce((sum,el) => sum + Math.max(0,Number(el.timeSec) || 0),0)
+    }));
+    const overloaded = loads.filter(station => targetSec > 0 && station.loadSec > targetSec);
+    const emptyStations = loads.filter(station => station.loadSec <= 0);
+    const precedenceViolations = hasFormalElements ? getPrecedenceViolations().size : 0;
+    const observations = savedOps.reduce((sum,op) => sum + (Array.isArray(op.laps) ? op.laps.length : 0),0);
+    const findings = [];
+    let severity = 0;
+    const addFinding = (level,text) => {
+      findings.push({level,text});
+      severity = Math.max(severity, level === 'bad' ? 2 : (level === 'warn' ? 1 : 0));
+    };
+
+    if (!(params.jornadaMin > 0) || !(params.demandaDiaria > 0)) {
+      addFinding('bad','Completa la jornada y la demanda diaria para calcular el ciclo objetivo.');
+    }
+    if (!ops.length) addFinding('bad','Aún no hay operaciones guardadas en el estudio de tiempos.');
+    if (!hasFormalElements) addFinding('warn','Importa las operaciones al balanceo para validar estaciones y precedencias formalmente.');
+    if (precedenceViolations) addFinding('bad',`Hay ${precedenceViolations} elemento(s) con precedencias inválidas.`);
+    if (overloaded.length) addFinding('bad',`${overloaded.length} estación(es) superan el ciclo objetivo de ${fmtNum(targetSec,1)} s.`);
+    if (emptyStations.length && reportModel.stations.length > 1) addFinding('warn',`${emptyStations.length} estación(es) están vacías y podrían eliminarse.`);
+    if (metrics.efficiencyPct > 0 && metrics.efficiencyPct < 75) addFinding('warn',`La eficiencia de balance es ${fmtNum(metrics.efficiencyPct,1)}%; revisa la distribución del trabajo.`);
+    else if (metrics.efficiencyPct >= 85 && !overloaded.length) addFinding('good',`La eficiencia de balance es ${fmtNum(metrics.efficiencyPct,1)}% y no hay estaciones sobrecargadas.`);
+    if (params.demandaDiaria > 0 && metrics.capacityGood > 0 && metrics.capacityGood < params.demandaDiaria) {
+      addFinding('bad',`La capacidad estimada queda ${fmtNum(params.demandaDiaria - metrics.capacityGood,1)} unidades por debajo de la demanda diaria.`);
+    } else if (params.demandaDiaria > 0 && metrics.capacityGood >= params.demandaDiaria) {
+      addFinding('good',`La capacidad estimada cubre la demanda con un margen de ${fmtNum(metrics.capacityGood - params.demandaDiaria,1)} unidades/día.`);
+    }
+    const baseline = scenarioModel.items.find(item => item.id === scenarioModel.baselineId);
+    const proposed = scenarioModel.items.find(item => item.id === scenarioModel.proposedId);
+    if (!baseline || !proposed || baseline.id === proposed.id) addFinding('warn','Guarda y selecciona dos escenarios distintos para documentar la mejora propuesta.');
+    if (!findings.length) addFinding('good','El estudio cuenta con información suficiente y no se detectaron alertas principales.');
+
+    return {params,ops,reportModel,metrics,loads,overloaded,observations,findings,severity,baseline,proposed};
+  }
+
+  function renderExecutiveReport(){
+    const report = document.getElementById('executiveReport');
+    if (!report) return;
+    const data = getExecutiveReportData();
+    const studyName = (document.getElementById('nombreEstudio')?.value || '').trim() || 'Estudio LeanTakt';
+    document.getElementById('reportStudyName').textContent = studyName;
+    document.getElementById('reportFolio').textContent = `Folio: ${window.currentFolio || '—'}`;
+    document.getElementById('reportGeneratedAt').textContent = `Actualizado: ${new Date().toLocaleString('es-MX')}`;
+    const statusText = data.severity === 2 ? 'Requiere acciones antes de liberar la propuesta' : (data.severity === 1 ? 'Estudio en revisión' : 'Estudio listo para revisión final');
+    document.getElementById('reportStatusText').textContent = statusText;
+
+    const kpis = [
+      ['Ciclo objetivo',data.metrics.targetSec > 0 ? `${fmtNum(data.metrics.targetSec,1)} s` : '—'],
+      ['Contenido de trabajo',data.metrics.workContentSec > 0 ? `${fmtNum(data.metrics.workContentSec,1)} s` : '—'],
+      ['Estaciones / operadores',String(data.metrics.stations || 0)],
+      ['Eficiencia de balance',data.metrics.efficiencyPct > 0 ? `${fmtNum(data.metrics.efficiencyPct,1)}%` : '—'],
+      ['Capacidad buena',data.metrics.capacityGood > 0 ? `${fmtNum(data.metrics.capacityGood,1)}/día` : '—'],
+      ['Costo por unidad',data.metrics.costPerGoodUnit >= 0 ? fmtMoney(data.metrics.costPerGoodUnit) : '—']
+    ];
+    document.getElementById('reportKpis').innerHTML = kpis.map(([label,value]) =>
+      `<div class="report-kpi"><span>${label}</span><b>${value}</b></div>`).join('');
+    document.getElementById('reportDiagnosis').innerHTML = data.findings.map(item =>
+      `<div class="report-finding ${item.level}">${escapeHtml(item.text)}</div>`).join('');
+
+    const target = data.metrics.targetSec;
+    document.getElementById('reportStations').innerHTML = data.loads.length ? data.loads.map(station => {
+      const ratio = target > 0 ? station.loadSec / target : 0;
+      const width = Math.min(100, Math.max(0, ratio * 100));
+      return `<div class="report-station"><span>${escapeHtml(station.name)}</span><div class="report-load-track"><div class="report-load-fill ${ratio>1?'over':''}" style="width:${width}%"></div></div><b>${fmtNum(station.loadSec,1)} s</b></div>`;
+    }).join('') : '<div class="hint">Sin estaciones configuradas.</div>';
+
+    const baseline = data.baseline;
+    const proposed = data.proposed;
+    const scenarioBox = document.getElementById('reportScenarioSummary');
+    if (!baseline || !proposed || baseline.id === proposed.id) {
+      scenarioBox.innerHTML = '<div class="hint">Selecciona escenarios distintos como actual y propuesto.</div>';
+    } else {
+      const a = baseline.metrics || calculateScenarioMetrics(baseline.balanceModel,baseline.lineSettings);
+      const b = proposed.metrics || calculateScenarioMetrics(proposed.balanceModel,proposed.lineSettings);
+      scenarioBox.innerHTML = `<table><thead><tr><th>Indicador</th><th>Actual</th><th>Propuesto</th></tr></thead><tbody>
+        <tr><td>Estaciones</td><td>${a.stations}</td><td>${b.stations}</td></tr>
+        <tr><td>Eficiencia</td><td>${fmtNum(a.efficiencyPct,1)}%</td><td>${fmtNum(b.efficiencyPct,1)}%</td></tr>
+        <tr><td>Capacidad buena</td><td>${fmtNum(a.capacityGood,1)}</td><td>${fmtNum(b.capacityGood,1)}</td></tr>
+        <tr><td>Costo/unidad</td><td>${fmtMoney(a.costPerGoodUnit)}</td><td>${fmtMoney(b.costPerGoodUnit)}</td></tr>
+      </tbody></table>`;
+    }
+
+    document.getElementById('reportStudyContent').innerHTML = `<table><tbody>
+      <tr><td>Operaciones estudiadas</td><td><b>${data.ops.length}</b></td></tr>
+      <tr><td>Observaciones registradas</td><td><b>${data.observations}</b></td></tr>
+      <tr><td>Elementos de balanceo</td><td><b>${balanceModel.elements.length}</b></td></tr>
+      <tr><td>Escenarios guardados</td><td><b>${scenarioModel.items.length}</b></td></tr>
+      <tr><td>Tiempo neto / efectivo</td><td><b>${fmtNum(data.params.tiempoNetoMin,1)} / ${fmtNum(data.params.tiempoEfectivoMin,1)} min</b></td></tr>
+      <tr><td>Demanda buena / bruta</td><td><b>${fmtNum(data.params.demandaDiaria,1)} / ${fmtNum(data.params.demandaBruta,1)}</b></td></tr>
+    </tbody></table>`;
+  }
+
+  function printExecutiveReport(){
+    renderExecutiveReport();
+    window.print();
+  }
+
+  async function refreshAppCache(){
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(key => caches.delete(key)));
+      }
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register('./service-worker.js');
+        await registration.update();
+      }
+    } finally {
+      location.reload();
+    }
+  }
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(registration => registration.update())
+        .catch(error => console.warn('No se pudo actualizar la PWA', error));
+    });
+  }
+
   // Init
+  initAppShell();
+  loadScenarioModel();
+  loadBalanceModel();
   loadOpsLS();
   loadLineLS();
   renderOpsList();
   updateResults();
   updateBalanceUI();
   initCloudPersistence();
+
+  function startDemoMode(){
+    isDemoMode = true;
+    currentUser = { uid:'demo-user', email:'demo@leantakt.local' };
+    window.userData = { nombre:'Usuario demostración', email:'demo@leantakt.local', rol:'demo', estatus:'activo' };
+    window.currentFolio = 'LT-DEMO-001';
+
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('cronometroApp').style.display = 'block';
+    document.getElementById('nombreEstudio').value = 'Línea de ensamble de calzado · Demo';
+    document.getElementById('folioDisplay').innerText = 'Folio: ' + window.currentFolio;
+    document.getElementById('loginError').textContent = '';
+    updateUserBadge();
+
+    const demoLine = {
+      jornadaMin:480,
+      sueldoSemanal:2600,
+      demandaDiaria:720,
+      comidaMin:30,
+      descansosMin:20,
+      parosPlaneadosMin:10,
+      eficienciaPlanPct:85,
+      scrapPct:3,
+      diasSemana:6,
+      heijunkaInterval:60
+    };
+    applyLineSettingsSnapshot(demoLine);
+
+    const settings = {
+      habilidad:0.03,
+      esfuerzo:0.02,
+      condiciones:0,
+      consistencia:0,
+      genero:0.09,
+      variables:[0.05]
+    };
+    applySettingsSnapshot(settings);
+    const demoOperations = [
+      ['Corte de pieza',[6.6,6.8,6.7,6.9,6.6]],
+      ['Preparación de componentes',[9.1,9.3,9.2,9.4,9.1]],
+      ['Costura lateral',[14.8,15.1,15.0,15.2,14.9]],
+      ['Montaje de casquillo',[11.6,11.8,11.7,11.9,11.6]],
+      ['Inyección de suela',[19.8,20.1,20.0,20.2,19.9]],
+      ['Pegado y prensado',[7.4,7.6,7.5,7.7,7.4]],
+      ['Acabado',[9.9,10.1,10.0,10.2,9.8]],
+      ['Inspección final',[4.9,5.1,5.0,5.2,4.8]]
+    ];
+    savedOps = demoOperations.map(([operacion,demoLaps],index) => ({
+      id:index + 1,
+      operacion,
+      cronometrista:'Equipo Lean',
+      laps:demoLaps,
+      settings:JSON.parse(JSON.stringify(settings)),
+      summary:calcSummary(demoLaps,settings),
+      savedAt:new Date(Date.now() - (demoOperations.length-index)*60000).toISOString()
+    }));
+    opAutoId = savedOps.length + 1;
+
+    const elementTypes = ['va','nva','va','va','machine','nva','va','va'];
+    const baseElements = savedOps.map((op,index) => ({
+      id:`demo-el-${index+1}`,
+      sourceOpId:op.id,
+      name:op.operacion,
+      timeSec:Number(op.summary.estandar.toFixed(2)),
+      type:elementTypes[index],
+      predecessors:index ? [`demo-el-${index}`] : []
+    }));
+    const createStations = (prefix,count) => Array.from({length:count},(_,index) => ({
+      id:`${prefix}-station-${index+1}`,
+      name:`Estación ${index+1}`
+    }));
+    const createModel = (prefix,count,assignments) => {
+      const stations = createStations(prefix,count);
+      return {
+        stations,
+        elements:baseElements.map((element,index) => ({
+          ...element,
+          stationId:stations[assignments[index]].id
+        }))
+      };
+    };
+    const actualModel = createModel('actual',6,[0,1,2,3,4,5,5,5]);
+    const proposedModel = createModel('proposed',5,[0,0,1,2,3,4,4,4]);
+    balanceModel = JSON.parse(JSON.stringify(proposedModel));
+
+    const lineSettings = JSON.parse(JSON.stringify(demoLine));
+    const createdAt = new Date().toISOString();
+    const actualScenario = {
+      id:'demo-actual',
+      name:'Situación actual · 6 operadores',
+      createdAt,
+      lineSettings,
+      balanceModel:actualModel,
+      metrics:calculateScenarioMetrics(actualModel,lineSettings)
+    };
+    const proposedScenario = {
+      id:'demo-proposed',
+      name:'Propuesta balanceada · 5 operadores',
+      createdAt,
+      lineSettings,
+      balanceModel:proposedModel,
+      metrics:calculateScenarioMetrics(proposedModel,lineSettings)
+    };
+    scenarioModel = {
+      items:[actualScenario,proposedScenario],
+      baselineId:actualScenario.id,
+      proposedId:proposedScenario.id
+    };
+
+    laps = [];
+    elapsed = 0;
+    lastLapTime = 0;
+    document.getElementById('operacion').value = '';
+    document.getElementById('cronometrista').value = 'Equipo Lean';
+    renderLaps();
+    renderOpsList();
+    renderBalanceDesigner();
+    renderScenarioUI();
+    updateResults();
+    updateBalanceUI();
+    renderExecutiveReport();
+    updateCloudStatus('offline','Modo demo · los cambios no se guardan');
+    const dashboardButton = document.querySelector('.nav-item[data-view="dashboardView"]');
+    switchAppView('dashboardView',dashboardButton);
+  }
 
   async function login() {
   const email = document.getElementById("email").value;
@@ -2292,6 +3626,10 @@ async function verPendientes() {
 }
 
 function logout() {
+  if (isDemoMode) {
+    location.reload();
+    return;
+  }
   signOut(auth);
 }
 
@@ -2311,11 +3649,14 @@ async function buscarPorFolio(folio) {
 
   if (querySnapshot.empty) {
     alert("❌ No se encontró el estudio");
-    return;
+    return false;
   }
 
   const docSnap = querySnapshot.docs[0];
   const data = docSnap.data();
+  localStorage.setItem(STUDY_ID_KEY, docSnap.id);
+  const studyNameInput = document.getElementById('nombreEstudio');
+  if (studyNameInput) studyNameInput.value = data.nombre || '';
 
 console.log("✅ Estudio encontrado:", data);
 
@@ -2325,7 +3666,18 @@ savedOps = data.operations || [];
 // ✅ 2. cargar configuraciones de línea
 if (data.lineSettings) {
   applyLineSettingsSnapshot(data.lineSettings);
+  localStorage.setItem(LS_LINE, JSON.stringify(data.lineSettings));
 }
+balanceModel = data.balanceModel && Array.isArray(data.balanceModel.elements)
+  ? data.balanceModel
+  : { elements: [], stations: [{ id:'station-1', name:'Estación 1' }] };
+scenarioModel = data.scenarios
+  ? normalizeScenarioModel(data.scenarios)
+  : { items: [], baselineId: null, proposedId: null };
+localStorage.setItem(LS_BALANCE, JSON.stringify(balanceModel));
+localStorage.setItem(LS_SCENARIOS, JSON.stringify(scenarioModel));
+localStorage.setItem(LS_OPS_V3, JSON.stringify(savedOps));
+opAutoId = savedOps.reduce((maxId, op) => Math.max(maxId, Number(op.id) || 0), 0) + 1;
 
 // ✅ 3. limpiar cronómetro actual
 reset();
@@ -2344,6 +3696,8 @@ renderOpsList();
 updateResults();
 updateBalanceUI();
 
+renderBalanceDesigner();
+renderScenarioUI();
 // ✅ 7. guardar folio activo
 window.currentFolio = data.folio;
 updateUserBadge(); // ✅
@@ -2354,9 +3708,14 @@ document.getElementById("folioDisplay").innerText =
 
 // ✅ 9. feedback
 alert(`✅ Estudio cargado: ${savedOps.length} operaciones`);
+return true;
 }
 
 function buscarPorFolioInput() {
+  if (isDemoMode) {
+    alert('La búsqueda en Firebase no está disponible en modo demo.');
+    return;
+  }
   const folio = document.getElementById('buscarFolio').value.trim();
 
   if (!folio) {
@@ -2430,69 +3789,76 @@ function updateUserBadge() {
 
   const nombre = window.userData.nombre || window.userData.email || "Usuario";
   const rol = window.userData.rol || "usuario";
+  const sidebarUser = document.getElementById('sidebarUser');
+  if (sidebarUser) sidebarUser.textContent = `${nombre} - ${rol}`;
+  const sidebarAdmin = document.getElementById('sidebarAdminBtn');
+  if (sidebarAdmin) sidebarAdmin.style.display = rol === 'admin' ? 'flex' : 'none';
+
 
   document.getElementById("userEmail").innerHTML =
     `👤 ${nombre} | 🛡 ${rol}`;
 }
 
 function abrirModalEstudios() {
-  document.getElementById("modalEstudios").style.display = "flex";
-  cargarTablaEstudios();
-}
-
-async function cargarTablaEstudios() {
-  const tbody = document.getElementById("tablaEstudios");
-
-  if (!tbody) {
-    console.error("❌ No existe tablaEstudios");
+  if (isDemoMode) {
+    alert('Inicia sesión para abrir estudios guardados en Firebase.');
     return;
   }
-
-  tbody.innerHTML = "<tr><td colspan='4'>Cargando...</td></tr>";
-
+  ['adminModal','modalDetalle','modalCiclos'].forEach(id => {
+    const otherModal = document.getElementById(id);
+    if (otherModal) otherModal.style.display = 'none';
+  });
+  const modal = document.getElementById('modalEstudios');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  cargarTablaEstudios();
+}
+async function cargarTablaEstudios() {
+  const tbody = document.getElementById('tablaEstudios');
+  if (!tbody) return;
+  tbody.innerHTML = "<tr><td colspan='5'>Cargando estudios...</td></tr>";
   try {
-    const snapshot = await getDocs(collection(db, "studies"));
-
-    let html = "";
-
-    snapshot.forEach(docSnap => {
-      const d = docSnap.data();
-
-      html += `
-        <tr onclick="verDetalleEstudio('${d.folio || ''}')" style="cursor:pointer">
-          <td><b>${d.folio || '-'}</b></td>
-          <td>${d.nombre || 'Sin nombre'}</td>
-          <td>${d.ownerUid || '-'}</td>
-          <td>${d.updatedAtLocal || '-'}</td>
-        </tr>
-      `;
-    });
-
-    if (!html) {
-      html = `<tr><td colspan="4" style="text-align:center;">⚠️ No hay estudios</td></tr>`;
-    }
-
-    tbody.innerHTML = html;
-
+    const snapshot = await getDocs(collection(db,'studies'));
+    const studies = snapshot.docs
+      .map(docSnap => ({ id:docSnap.id, ...docSnap.data() }))
+      .sort((a,b) => String(b.updatedAtLocal || '').localeCompare(String(a.updatedAtLocal || '')));
+    tbody.innerHTML = studies.length ? studies.map(study => {
+      const folio = escapeHtml(study.folio || '');
+      return `<tr class="study-open-row" data-folio="${folio}" onclick="seleccionarEstudio(this.dataset.folio)">
+        <td><b>${folio || '-'}</b></td>
+        <td>${escapeHtml(study.nombre || 'Sin nombre')}</td>
+        <td>${escapeHtml(study.ownerUid || '-')}</td>
+        <td>${escapeHtml(study.updatedAtLocal || '-')}</td>
+        <td><button class="miniBtn" type="button" onclick="event.stopPropagation(); seleccionarEstudio(this.closest('tr').dataset.folio)">Abrir</button></td>
+      </tr>`;
+    }).join('') : '<tr><td colspan="5" style="text-align:center;">No hay estudios guardados</td></tr>';
   } catch (error) {
-    console.error("❌ Error cargando estudios:", error);
-    tbody.innerHTML = "<tr><td colspan='4'>Error al cargar</td></tr>";
+    console.error('Error cargando estudios',error);
+    tbody.innerHTML = "<tr><td colspan='5'>No se pudieron cargar los estudios</td></tr>";
   }
 }
-
 function cerrarModalEstudios() {
-  document.getElementById("modalEstudios").style.display = "none";
+  const modal = document.getElementById('modalEstudios');
+  if (modal) modal.style.display = 'none';
 }
-
 async function seleccionarEstudio(folio) {
-  console.log("📂 Abrir:", folio);
-
-  await buscarPorFolio(folio); // ✅ reutilizas tu función
-
-  cerrarModalEstudios(); // ✅ cierra modal automáticamente
+  if (!folio) return;
+  const tbody = document.getElementById('tablaEstudios');
+  if (tbody) tbody.innerHTML = "<tr><td colspan='5'>Abriendo estudio...</td></tr>";
+  try {
+    const loaded = await buscarPorFolio(folio);
+    if (!loaded) {
+      await cargarTablaEstudios();
+      return;
+    }
+    cerrarModalEstudios();
+    const timeButton = document.querySelector('.nav-item[data-view="timeStudyView"]');
+    switchAppView('timeStudyView',timeButton);
+  } catch (error) {
+    console.error('No se pudo abrir el estudio',error);
+    if (tbody) tbody.innerHTML = "<tr><td colspan='5'>No se pudo abrir el estudio</td></tr>";
+  }
 }
-
-
 function abrirModalDetalle() {
   document.getElementById("modalDetalle").style.display = "flex";
 }
@@ -2616,11 +3982,31 @@ window.lap = lap;
 window.reset = reset;
 window.saveOperation = saveOperation;
 window.syncCloudNow = syncCloudNow;
+window.saveStudyAs = saveStudyAs;
 window.exportCSV = exportCSV;
 window.exportXLSX_ExcelJS = exportXLSX_ExcelJS;
 window.clearAllOperations = clearAllOperations;
+window.addBalanceElement = addBalanceElement;
+window.deleteBalanceElement = deleteBalanceElement;
+window.assignBalanceElement = assignBalanceElement;
+window.updateBalanceElement = updateBalanceElement;
+window.beginBalanceDrag = beginBalanceDrag;
+window.allowBalanceDrop = allowBalanceDrop;
+window.leaveBalanceDrop = leaveBalanceDrop;
+window.dropBalanceElement = dropBalanceElement;
+window.generateAutomaticBalance = generateAutomaticBalance;
+window.refreshAppCache = refreshAppCache;
+window.printExecutiveReport = printExecutiveReport;
+window.captureScenario = captureScenario;
+window.deleteScenario = deleteScenario;
+window.restoreScenario = restoreScenario;
+window.selectScenarioForComparison = selectScenarioForComparison;
+window.addBalanceStation = addBalanceStation;
+window.deleteBalanceStation = deleteBalanceStation;
+window.importOperationsToBalance = importOperationsToBalance;
 
 // ✅ auth
+window.startDemoMode = startDemoMode;
 window.login = login;
 window.register = register;
 window.logout = logout;
@@ -2645,7 +4031,7 @@ window.goBackDetail = goBackDetail;
   <div class="modal-content" style="max-width:700px;">
 
     <div class="modal-header">
-      <h3>📂 Estudios</h3>
+      <h3>📂 Abrir estudio</h3>
       <button onclick="cerrarModalEstudios()">✖</button>
     </div>
 
@@ -2657,6 +4043,7 @@ window.goBackDetail = goBackDetail;
             <th>Nombre</th>
             <th>Usuario</th>
             <th>Fecha</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody id="tablaEstudios"></tbody>
